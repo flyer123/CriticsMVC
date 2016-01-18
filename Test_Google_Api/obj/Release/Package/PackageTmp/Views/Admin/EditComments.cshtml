@@ -1,0 +1,44 @@
+﻿@model PagedList.IPagedList<Test_Google_Api.Models.SaveModels.CustomLabelModel>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Редактирование комментариев";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main>
+    <section class="well">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    </div>
+                <div class="col-md-7">
+                    <div class="pager">
+                        @Html.PagedListPager(Model, page => Url.Action("EditComments", new { page }))
+                    </div>
+                    <table id="cityTable" class="table stacktable stacktable1">
+                        <tr>
+                            <th>Пользователь</th>
+                            <th>Комментарий</th>
+                            <th>Действие</th>
+                        </tr>
+                        @foreach (var v in Model)
+                        {
+                            <tr>
+                                <td>@v.Name</td>
+                                <td>@v.LabelText</td>
+                                <td>
+                                    <a class="link fa fa-pencil" href="/Admin/EditComment/@v.Id" title="Изменить" comment="@v.Id"></a>
+                                    <a class="link fa fa-trash" href="/Admin/RemoveComment/@v.Id" title="Удалить" id="@v.Id"></a>
+                                </td>
+                            </tr>
+                        }
+                        </table>
+                    <div class="pager">
+                        @Html.PagedListPager(Model, page => Url.Action("EditComments", new { page }))
+                    </div>
+</div>
+                </div>
+            </div>
+        </section>
+    </main>
+

@@ -1,0 +1,327 @@
+﻿@using Test_Google_Api.Models;
+@using System.Web.Mvc.Ajax;
+@model List<Position>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Position> marks = new List<Position>();
+    List<Position> reviews = new List<Position>(); 
+    foreach (var v in Model)
+    {
+        if (!v.Review.Equals(""))
+        {
+            marks.Add(v);
+            reviews.Add(v);
+        }
+    }
+    reviews.Reverse();
+}
+
+
+@*<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>*@
+    <div class="camera_container">
+        <div id="camera" class="camera_wrap">
+            <div data-src=@Url.Content("~/images/page-1_slide01.jpg")>
+                <div class="camera_caption fadeIn">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-offset-0 col-xs-12 col-md-offset-2 col-md-8">
+                                <div class="camera-box">
+                                    <div class="camera-box_aside">
+                                        <img class="circle" src=@Url.Content("~/images/person.jpg") alt="">
+                                    </div>
+                                    <div class=" verta-box">
+                                        <div class='verta-box_wr'>
+                                            <div class='verta-box_cnt'>
+                                                <p>Антон Эго - единственный<br> ресторанный критик, посетивший<br> все рестораны города</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-src=@Url.Content("~/images/page-1_slide01.jpg")>
+                <div class="camera_caption fadeIn">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-offset-0 col-xs-12 col-md-offset-2 col-md-8">
+                                <div class="camera-box">
+                                    <div class="camera-box_aside">
+                                        <img class="circle" src=@Url.Content("~/images/person2.jpg") alt="">
+                                    </div>
+                                    <div class='verta-box'>
+                                        <div class='verta-box_wr'>
+                                            <div class='verta-box_cnt'>
+                                                <p>Рейтинг всех ресторанов города и более 500 авторитетных рецензий специально для вас!</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-src=@Url.Content("~/images/page-1_slide03.jpg")>
+                <div class="camera_caption fadeIn">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-offset-0 col-xs-12 col-md-offset-2 col-md-8">
+                                <div class="camera-box">
+                                    <div class="camera-box_aside">
+                                        <img class="circle" src=@Url.Content("~/images/person3.jpg") alt="">
+                                    </div>
+                                    <div class='verta-box'>
+                                        <div class='verta-box_wr'>
+                                            <div class='verta-box_cnt'>
+                                                <p>20 лет бесценного опыта и признание в профессиональных кругах</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="map">
+        <p id="demo"></p>
+        <div id="map" class="map_model"></div>
+        <div class="map-overlay dropdown">
+            <div class="dropdown_off">
+                <h4><a class="show_link" href="#" title="показать полностью">ТОП-10</a></h4>
+            </div>
+            <div class="dropdown_on">
+                <a href="#" class="hide_link fa fa-compress" title="свернуть"></a>
+                <div class="dropdown_cnt">
+                    <h4>ТОП-10<br>ресторанов Одессы</h4>
+                    <ul class="index-list"> 
+                        @foreach (var v in marks)
+                        {
+                            @*<li><a href="#" title="@v.CustomLabel" class="tooltip" data-tooltip>@v.Name</a></li>*@
+                            <li>@Html.ActionLink(v.Name, "Review", "Home", new { num=@v.AddressId}, new { @title = v.CustomLabel, @class = "tooltip", @data_tooltip = "" })</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <section class="well">
+        <div class="container">
+            <h2>Новые рецензии:</h2>
+            <div class="owl-carousel owl-carousel1">
+                @foreach (var v in reviews)
+                {
+                    <div class="item">
+                        <div class="review-teaser">
+                            @if (Directory.Exists((Server.MapPath("~/images/Restaurants/rest_" + @v.AddressId.ToString()))))
+                            {
+                                int count = 0;
+                                foreach (var imgPath in Directory.GetFiles(Server.MapPath("~/images/Restaurants/rest_" + @v.AddressId.ToString()), "*.*"))
+                                {
+                                    var img = new FileInfo(imgPath);
+                                    <div class="item">
+                                        <img src="@Url.Content(String.Format("~/images/Restaurants/rest_" + @v.AddressId.ToString() + "/{0}", img.Name))" alt="" />
+
+                                    </div>
+                                    count = count + 1;
+                                    if (count > 0)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                            @*<h4><a href="review.html">@v.Name</a></h4>*@
+                            @Html.ActionLink(v.Name, "Review", "Home", new { num = @v.AddressId }, null)
+                            @switch ((v.Interior + v.Kitchen + v.Service) / 3)
+                                {
+                                    case 1:
+                                    @Html.Raw("<span class=" + "\"" + "star-rating star-rating1" + "\"" + ">")
+                                                                    break;
+                                    case 2:
+                                    @Html.Raw("<span class=" + "\"" + "star-rating star-rating2" + "\"" + ">")
+                                                                    break;
+                                    case 3:
+                                    @Html.Raw("<span class=" + "\"" + "star-rating star-rating3" + "\"" + ">")
+                                                                    break;
+                                    case 4:
+                                    @Html.Raw("<span class=" + "\"" + "star-rating star-rating4" + "\"" + ">")
+                                                                break;
+                                    case 5:
+                                    @Html.Raw("<span class=" + "\"" + "star-rating star-rating5" + "\"" + ">")
+                                                                    break;
+                                }
+                                @Html.Raw("<span class=" + "\"" + "fa fa-star" + "\"" + ">")@Html.Raw("</span>")
+                                @Html.Raw("<span class=" + "\"" + "fa fa-star" + "\"" + ">")@Html.Raw("</span>")
+                                @Html.Raw("<span class=" + "\"" + "fa fa-star" + "\"" + ">")@Html.Raw("</span>")
+                                @Html.Raw("<span class=" + "\"" + "fa fa-star" + "\"" + ">")@Html.Raw("</span>")
+                                @Html.Raw("<span class=" + "\"" + "fa fa-star" + "\"" + ">")@Html.Raw("</span>")
+                                @Html.Raw("</span>")
+                                <p>Дата рецензии: <time datetime="2015-10-25">@v.Date</time></p>
+                            <a class="btn" href="/Home/Review/?num=@v.AddressId">Читать</a>
+                    </div>
+                    </div>
+                    }
+           </div>
+        </div>
+    </section>
+    <script type="text/javascript">
+        var data = @Html.Raw(Json.Encode(marks));
+        function initialize()
+        {
+            var customMapType = new google.maps.StyledMapType([
+                   {
+                       "featureType": "landscape",
+                       "stylers": [
+                           {
+                               "saturation": -100
+                           },
+                           {
+                               "lightness": 60
+                           }
+                       ]
+                   },
+                   {
+                       "featureType": "road.local",
+                       "stylers": [
+                           {
+                               "saturation": -100
+                           },
+                           {
+                               "lightness": 40
+                           },
+                           {
+                               "visibility": "on"
+                           }
+                       ]
+                   },
+                   {
+                       "featureType": "transit",
+                       "stylers": [
+                           {
+                               "saturation": -100
+                           },
+                           {
+                               "visibility": "simplified"
+                           }
+                       ]
+                   },
+                   {
+                       "featureType": "administrative.province",
+                       "stylers": [
+                           {
+                               "visibility": "off"
+                           }
+                       ]
+                   },
+                   {
+                       "featureType": "water",
+                       "stylers": [
+                           {
+                               "visibility": "on"
+                           },
+                           {
+                               "lightness": 30
+                           }
+                       ]
+                   },
+                   {
+                       "featureType": "road.highway",
+                       "elementType": "geometry.fill",
+                       "stylers": [
+                           {
+                               "color": "#ef8c25"
+                           },
+                           {
+                               "lightness": 40
+                           }
+                       ]
+                   },
+                   {
+                       "featureType": "road.highway",
+                       "elementType": "geometry.stroke",
+                       "stylers": [
+                           {
+                               "visibility": "off"
+                           }
+                       ]
+                   },
+                   {
+                       "featureType": "poi.park",
+                       "elementType": "geometry.fill",
+                       "stylers": [
+                           {
+                               "color": "#b6c54c"
+                           },
+                           {
+                               "lightness": 40
+                           },
+                           {
+                               "saturation": -40
+                           }
+                       ]
+                   },
+                   {}
+            ], {
+                name: 'Custom Style'
+            });
+            var customMapTypeId = 'custom_style';
+            var o = document.getElementById("map");
+            if (o) {
+                var x = document.getElementById("demo");
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition((function (position) {
+                        //lat = position.coords.latitude;
+                        //lon = position.coords.longitude;
+                        //latlon = new google.maps.LatLng(lat, lon);
+                        var latlon = { lat: 46.39323, lng: 30.728967 };
+                        mapholder = o;
+                        var myOptions = {
+                            center: latlon,
+                            zoom: 15,
+                            scrollwheel: false,
+                            mapTypeControlOptions: {
+                                mapTypeIds: [google.maps.MapTypeId.ROADMAP, customMapTypeId]
+                            }
+                        }
+                        var map = new google.maps.Map(o, myOptions);
+                        var marker = new google.maps.Marker({
+                            position:latlon,
+                            map:map,
+                            icon: '/images/gmap_marker.png',
+                            title:"Вы находитесь здесь!"
+                        });
+                        var infowindow = new google.maps.InfoWindow();
+                        for (var v = 0; v < data.length; v++)
+                        {
+                            var latlng = new google.maps.LatLng(data[v].Lat, data[v].Lng);
+                            var marker = new google.maps.Marker({position: new google.maps.LatLng(data[v].Lat, data[v].Lng), map: map, title: data[v].Name,
+                                icon:'/images/gmap_marker_rest.png', customInfo: data[v].AddressId});
+                            google.maps.event.addListener(marker, 'click', function() {
+                                var link = "/Home/Review?num=" + this.customInfo;
+                                infowindow.setContent(this.title + '<br /> ' + '<a href="' + link +'">' + "Подробно" + '</a>');
+                                infowindow.open(map, this);
+                            });
+                        }
+                        map.mapTypes.set(customMapTypeId, customMapType);
+                        map.setMapTypeId(customMapTypeId);
+                    }
+                    )
+                    )
+                }
+                else {
+                    x.innerHTML = "Geolocation is not supported by this browser.";
+                }
+            }
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+

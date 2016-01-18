@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "AdminMenu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<!--========================================================
+                            CONTENT
+  =========================================================-->
+<main>
+    <section class="well">
+        <div class="container">
+            <h2>Административное меню</h2>
+            <h4>@Html.ActionLink("Создать новую рецензию","CreateReview","Admin")</h4>
+            <h4>@Html.ActionLink("Редактировать рецензию", "SearchReview", "Admin")</h4>
+            <h4>@Html.ActionLink("Города и районы", "AdminPlaces", "Admin")</h4>
+            <h4>@Html.ActionLink("Сети и рестораны", "RemoveRestaurant", "Admin")</h4>
+            <h4>@Html.ActionLink("Комментарии к рецензиям", "EditComments", "Admin")</h4>
+            @*<h4>@Html.ActionLink("Контактная форма", "Contacts", "Home")</h4>*@
+        </div>
+    </section>
+</main>
+

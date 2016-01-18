@@ -1,0 +1,89 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Блог";
+}
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<!--========================================================
+                           CONTENT
+ =========================================================-->
+<main>
+    <section class="well">
+        <div class="container">
+            <h2>Блог</h2>
+            <h6>Мой еженедельный блог содержит недавние события и новости ресторанной жизни Одессы и мира,<br> а также мои гастрономические впечатления</h6>
+            <div class="row">
+                <div class="col-sm-4">
+                    <img src="~/images/blog-img04.jpg" alt="">
+                    <h4><a href="#">Гастрит за деньги</a></h4>
+                    <div class="blog_meta">
+                        <p>Дата: <time datetime="2015-10-25">12 октября 2015</time></p>
+                        <p>Категории: <a href="#">высокая кухня</a>, <a href="#">семейный ресторан</a></p>
+                    </div>
+                    <p>За 25 лет осознанной трудовой практики я вполне сносно научился принципам украинской, одесской и некоторых региональных итальянских кухонь. Могу ...</p>
+                    <a class="btn" href="#">Читать дальше</a>
+                </div>
+                <div class="col-sm-4">
+                    <img src="~/images/blog-img02.jpg" alt="">
+                    <h4><a href="#">Рестораны без еды</a></h4>
+                    <div class="blog_meta">
+                        <p>Дата: <time datetime="2015-10-25">12 октября 2015</time></p>
+                        <p>Категории: <a href="#">местная кухня</a></p>
+                    </div>
+                    <p>В жизни каждого человека и каждого города должны быть постоянные величины. К примеру, есть несколько постоянных ресторанных величин. И «У моря», безусловно, одна из них...</p>
+                    <a class="btn" href="#">Читать дальше</a>
+                </div>
+                <div class="col-sm-4">
+                    <img src="~/images/blog-img03.jpg" alt="">
+                    <h4><a href="#">Мой идеальный день</a></h4>
+                    <div class="blog_meta">
+                        <p>Дата: <time datetime="2015-10-25">12 октября 2015</time></p>
+                        <p>Категории: <a href="#">высокая кухня</a>, <a href="#">семейный ресторан</a></p>
+                    </div>
+                    <p>Мой каждый день — идеален. Просыпаюсь в 6:30. Сразу после душа опрыскиваю кротон и кормлю золотую рыбку. Затем готовлю завтрак ...</p>
+                    <a class="btn" href="#">Читать дальше</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <img src="~/images/blog-img01.jpg" alt="">
+                    <h4><a href="#">Визит в "Alsace"</a></h4>
+                    <div class="blog_meta">
+                        <p>Дата: <time datetime="2015-10-25">12 октября 2015</time></p>
+                        <p>Категории: <a href="#">высокая кухня</a>, <a href="#">семейный ресторан</a></p>
+                    </div>
+                    <p>В жизни каждого человека и каждого города должны быть постоянные величины. К примеру, есть несколько постоянных ресторанных величин. И «У моря», безусловно, одна из них...</p>
+                    <a class="btn" href="#">Читать дальше</a>
+                </div>
+            </div>
+            <ul class="pagination">
+                <li><a href="#"><span class="fa fa-chevron-left"></span></a></li>
+                <li class="active"><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><span>...</span></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#"><span class="fa fa-chevron-right"></span></a></li>
+            </ul>
+
+        </div>
+    </section>
+    <section class="well2">
+        <div class="container tc">
+            <div class="row">
+                <div class="col-xs-offset-0 col-xs-12 col-md-offset-3 col-md-6">
+                    <div class="divider">
+                        <span class="fl flaticon-restaurant35"></span>
+                    </div>
+                    <p>И помни:</p>
+                    <p class="quote">«Ты есть то, что ты ешь» </p>
+                    <p class="tr">- Гиппократ.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+

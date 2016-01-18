@@ -1,0 +1,51 @@
+﻿@using Test_Google_Api.Models;
+@model LoginViewModel
+@{
+    ViewBag.Title = "Войти";
+}
+<main>
+    <section class="well">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-5">
+                    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "mailform  login-form", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <h4>Учетная запись пользователя</h4>
+                        @*<hr />*@
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <fieldset>
+                            <label>
+                                @Html.TextBoxFor(m => m.Email, new { @placeholder = "email" })
+                                @Html.ValidationMessageFor(m => m.Email)
+                            </label>
+                        </fieldset>
+                        <fieldset>
+                            <label>
+                                @Html.PasswordFor(m => m.Password, new { @placeholder = "password" })
+                                @Html.ValidationMessageFor(m => m.Password)
+                            </label>
+                        </fieldset>
+                        <fieldset>
+                            <br/>
+                                    <span>
+                                    @Html.CheckBoxFor(m => m.RememberMe)
+                                    @Html.LabelFor(m => m.RememberMe)
+                                    </span>
+                        </fieldset>
+                        <div class="mfControls tc">
+                            <button type="submit" class="btn">Войти</button>
+                        </div>
+                        @*<p>
+                            @Html.ActionLink("Зарегистрировать нового пользователя", "Register")
+                        </p>*@
+                        @* Enable this once you have account confirmation enabled for password reset functionality
+                            <p>
+                              @Html.ActionLink("Forgot your password?", "ForgotPassword")
+                            </p>*@
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

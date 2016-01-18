@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="RestaurantsDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Addresses">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="address" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="longtitude" Type="Double" />
+    <Property Name="latitude" Type="Double" />
+    <Property Name="restaurantID" Type="Int32" Nullable="false" />
+    <Property Name="districtId" Type="Int32" Nullable="false" />
+    <Property Name="phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="work_time" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="characteristicId" Type="Int32" />
+    <NavigationProperty Name="Characteristics" Relationship="Self.FK_Addresses_Characteristics" FromRole="Addresses" ToRole="Characteristics" />
+    <NavigationProperty Name="Districts" Relationship="Self.FK_Addresses_Districts" FromRole="Addresses" ToRole="Districts" />
+    <NavigationProperty Name="Restaurants" Relationship="Self.FK_Addresses_Restaurants" FromRole="Addresses" ToRole="Restaurants" />
+    <NavigationProperty Name="Recensio" Relationship="Self.FK_Recensio_Addresses" FromRole="Addresses" ToRole="Recensio" />
+  </EntityType>
+  <EntityType Name="Characteristics">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="kitchen_type" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="sum_amount" Type="Int32" />
+    <Property Name="propositions" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="music" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="children" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Addresses" Relationship="Self.FK_Addresses_Characteristics" FromRole="Characteristics" ToRole="Addresses" />
+  </EntityType>
+  <EntityType Name="CustomLabels">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="recensioID" Type="Int32" Nullable="false" />
+    <Property Name="customLabel" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="dateOfCreation" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="Recensio" Relationship="Self.FK_CustomLabels_Recensio" FromRole="CustomLabels" ToRole="Recensio" />
+  </EntityType>
+  <EntityType Name="Districts">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Addresses" Relationship="Self.FK_Addresses_Districts" FromRole="Districts" ToRole="Addresses" />
+  </EntityType>
+  <EntityType Name="Recensio">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="addressID" Type="Int32" Nullable="false" />
+    <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="kitchenMark" Type="Int32" Nullable="false" />
+    <Property Name="interiorMark" Type="Int32" Nullable="false" />
+    <Property Name="serviceMark" Type="Int32" Nullable="false" />
+    <Property Name="dateOfCreation" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="Addresses" Relationship="Self.FK_Recensio_Addresses" FromRole="Recensio" ToRole="Addresses" />
+    <NavigationProperty Name="CustomLabels" Relationship="Self.FK_CustomLabels_Recensio" FromRole="Recensio" ToRole="CustomLabels" />
+  </EntityType>
+  <EntityType Name="Restaurants">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Addresses" Relationship="Self.FK_Addresses_Restaurants" FromRole="Restaurants" ToRole="Addresses" />
+  </EntityType>
+  <Association Name="FK_Addresses_Characteristics">
+    <End Role="Characteristics" Type="Self.Characteristics" Multiplicity="0..1" />
+    <End Role="Addresses" Type="Self.Addresses" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Characteristics">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Addresses">
+        <PropertyRef Name="characteristicId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Addresses_Districts">
+    <End Role="Districts" Type="Self.Districts" Multiplicity="1" />
+    <End Role="Addresses" Type="Self.Addresses" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Districts">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Addresses">
+        <PropertyRef Name="districtId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Addresses_Restaurants">
+    <End Role="Restaurants" Type="Self.Restaurants" Multiplicity="1" />
+    <End Role="Addresses" Type="Self.Addresses" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Restaurants">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Addresses">
+        <PropertyRef Name="restaurantID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Recensio_Addresses">
+    <End Role="Addresses" Type="Self.Addresses" Multiplicity="1" />
+    <End Role="Recensio" Type="Self.Recensio" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Addresses">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Recensio">
+        <PropertyRef Name="addressID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CustomLabels_Recensio">
+    <End Role="Recensio" Type="Self.Recensio" Multiplicity="1" />
+    <End Role="CustomLabels" Type="Self.CustomLabels" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Recensio">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="CustomLabels">
+        <PropertyRef Name="recensioID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="RestaurantsDBEntities5" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Addresses" EntityType="Self.Addresses" />
+    <EntitySet Name="Characteristics" EntityType="Self.Characteristics" />
+    <EntitySet Name="CustomLabels" EntityType="Self.CustomLabels" />
+    <EntitySet Name="Districts" EntityType="Self.Districts" />
+    <EntitySet Name="Recensio" EntityType="Self.Recensio" />
+    <EntitySet Name="Restaurants" EntityType="Self.Restaurants" />
+    <AssociationSet Name="FK_Addresses_Characteristics" Association="Self.FK_Addresses_Characteristics">
+      <End Role="Characteristics" EntitySet="Characteristics" />
+      <End Role="Addresses" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Addresses_Districts" Association="Self.FK_Addresses_Districts">
+      <End Role="Districts" EntitySet="Districts" />
+      <End Role="Addresses" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Addresses_Restaurants" Association="Self.FK_Addresses_Restaurants">
+      <End Role="Restaurants" EntitySet="Restaurants" />
+      <End Role="Addresses" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Recensio_Addresses" Association="Self.FK_Recensio_Addresses">
+      <End Role="Addresses" EntitySet="Addresses" />
+      <End Role="Recensio" EntitySet="Recensio" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CustomLabels_Recensio" Association="Self.FK_CustomLabels_Recensio">
+      <End Role="Recensio" EntitySet="Recensio" />
+      <End Role="CustomLabels" EntitySet="CustomLabels" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

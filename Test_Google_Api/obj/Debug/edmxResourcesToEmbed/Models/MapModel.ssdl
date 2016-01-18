@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="RestaurantsDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Addresses">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="address" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="longtitude" Type="float" />
+    <Property Name="latitude" Type="float" />
+    <Property Name="restaurantID" Type="int" Nullable="false" />
+    <Property Name="imageId" Type="int" />
+    <Property Name="districtId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CustomLabels">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="recensioID" Type="int" Nullable="false" />
+    <Property Name="customLabel" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="dateOfCreation" Type="date" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Districts">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="150" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Images">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="image1" Type="nvarchar" MaxLength="250" />
+    <Property Name="image2" Type="nvarchar" MaxLength="250" />
+    <Property Name="image3" Type="nvarchar" MaxLength="250" />
+    <Property Name="image4" Type="nvarchar" MaxLength="250" />
+    <Property Name="image5" Type="nvarchar" MaxLength="250" />
+    <Property Name="image6" Type="nvarchar" MaxLength="250" />
+  </EntityType>
+  <EntityType Name="Recensio">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="addressID" Type="int" Nullable="false" />
+    <Property Name="description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="kitchenMark" Type="int" Nullable="false" />
+    <Property Name="interiorMark" Type="int" Nullable="false" />
+    <Property Name="serviceMark" Type="int" Nullable="false" />
+    <Property Name="dateOfCreation" Type="date" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Restaurants">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="200" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_Addresses_Districts">
+    <End Role="Districts" Type="Self.Districts" Multiplicity="1" />
+    <End Role="Addresses" Type="Self.Addresses" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Districts">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Addresses">
+        <PropertyRef Name="districtId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Addresses_Images">
+    <End Role="Images" Type="Self.Images" Multiplicity="0..1" />
+    <End Role="Addresses" Type="Self.Addresses" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Images">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Addresses">
+        <PropertyRef Name="imageId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Addresses_Restaurants">
+    <End Role="Restaurants" Type="Self.Restaurants" Multiplicity="1" />
+    <End Role="Addresses" Type="Self.Addresses" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Restaurants">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Addresses">
+        <PropertyRef Name="restaurantID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CustomLabels_Recensio">
+    <End Role="Recensio" Type="Self.Recensio" Multiplicity="1" />
+    <End Role="CustomLabels" Type="Self.CustomLabels" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Recensio">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="CustomLabels">
+        <PropertyRef Name="recensioID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Recensio_Addresses">
+    <End Role="Addresses" Type="Self.Addresses" Multiplicity="1" />
+    <End Role="Recensio" Type="Self.Recensio" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Addresses">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Recensio">
+        <PropertyRef Name="addressID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="RestaurantsDBModelStoreContainer">
+    <EntitySet Name="Addresses" EntityType="Self.Addresses" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CustomLabels" EntityType="Self.CustomLabels" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Districts" EntityType="Self.Districts" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Images" EntityType="Self.Images" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Recensio" EntityType="Self.Recensio" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Restaurants" EntityType="Self.Restaurants" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Addresses_Districts" Association="Self.FK_Addresses_Districts">
+      <End Role="Districts" EntitySet="Districts" />
+      <End Role="Addresses" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Addresses_Images" Association="Self.FK_Addresses_Images">
+      <End Role="Images" EntitySet="Images" />
+      <End Role="Addresses" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Addresses_Restaurants" Association="Self.FK_Addresses_Restaurants">
+      <End Role="Restaurants" EntitySet="Restaurants" />
+      <End Role="Addresses" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CustomLabels_Recensio" Association="Self.FK_CustomLabels_Recensio">
+      <End Role="Recensio" EntitySet="Recensio" />
+      <End Role="CustomLabels" EntitySet="CustomLabels" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Recensio_Addresses" Association="Self.FK_Recensio_Addresses">
+      <End Role="Addresses" EntitySet="Addresses" />
+      <End Role="Recensio" EntitySet="Recensio" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

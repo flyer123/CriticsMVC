@@ -1,0 +1,415 @@
+﻿@model PagedList.IPagedList<Test_Google_Api.Models.ViewModel.RatingModel>
+@using PagedList.Mvc;
+@using Test_Google_Api.Models;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Test_Google_Api.Models.ViewModel.RatingModel> netRating = ViewBag.NetRatingList;
+    List<Test_Google_Api.Models.ViewModel.DistrictModel> districts = ViewBag.Districts;
+    List<Test_Google_Api.Models.AdminModels.Network> networks = ViewBag.Networks;
+    string networkName = ViewBag.NetworkName;
+}
+<head>
+    <meta name="viewport" content="width=device-width" />
+ <title>@ViewBag.Title</title>
+</head>
+<!--========================================================
+                            CONTENT
+  =========================================================-->
+<section class="well">
+    <div class="container">
+        <h2>Рейтинг ресторанов</h2>
+        <div class="filter-block">
+            @if (Model.Count != 0)
+            {
+            }
+            @using (Html.BeginForm("Rating", "Home", null, FormMethod.Post, new { @class = "mailform filter-form" }))
+            {
+                <div class="fields">
+                    <fieldset>
+                        <label class="select-label">
+                            @{
+                                List<SelectListItem> listItemsDistricts = new List<SelectListItem>();
+                                listItemsDistricts.Add(new SelectListItem
+                                {
+                                    Text = "Все районы",
+                                    Value = "0"
+                                });
+                                foreach (var v in districts)
+                                {
+                                    listItemsDistricts.Add(new SelectListItem { Text = v.District, Value = v.Id.ToString() });
+                                }
+                                @Html.DropDownList("district", new SelectList(listItemsDistricts, "Value", "Text"));
+                                }
+                        </label>
+                    </fieldset>
+
+                    <fieldset>
+                        <label class="select-label">
+                            @{
+                                List<SelectListItem> listItemsData = new List<SelectListItem>();
+                                listItemsData.Add(new SelectListItem
+                                {
+                                    Text = "За последний месяц",
+                                    Value = "month"
+                                });
+                                listItemsData.Add(new SelectListItem
+                                {
+                                    Text = "За все время",
+                                    Value = "all"
+                                });
+                                @Html.DropDownList("data", new SelectList(listItemsData, "Value", "Text"));
+                            }
+                        </label>
+                    </fieldset>
+                </div>
+
+
+                <div class="fields">
+                    <fieldset>
+                        <label class="select-label">
+                            @{
+                                List<SelectListItem> listItemsSort = new List<SelectListItem>();
+                                listItemsSort.Add(new SelectListItem
+                                {
+                                    Text = "Кухня",
+                                    Value = "1"
+                                });
+                                listItemsSort.Add(new SelectListItem
+                                {
+                                    Text = "Интерьер",
+                                    Value = "2"
+                                });
+                                listItemsSort.Add(new SelectListItem
+                                {
+                                    Text = "Обслуживание",
+                                    Value = "3"
+                                });
+                                listItemsSort.Add(new SelectListItem
+                                {
+                                    Text = "Средний счет",
+                                    Value = "4"
+                                });
+                                @Html.DropDownList("criterion", new SelectList(listItemsSort, "Value", "Text"));
+                            }
+                        </label>
+                    </fieldset>
+                    <fieldset>
+                        <label class="select-label">
+                            @{
+                                List<SelectListItem> listNetworks = new List<SelectListItem>();
+                                foreach (var v in networks)
+                                {
+                                    if (v.Id == 1)
+                                    {
+                                        listNetworks.Add(new SelectListItem { Text = "Без привязки к сети", Value = @v.Id.ToString() });
+                                    }
+                                    else
+                                    {
+                                        listNetworks.Add(new SelectListItem { Text = @v.Name, Value = @v.Id.ToString() });
+                                    }
+                                }
+                                @Html.DropDownList("network", new SelectList(listNetworks, "Value", "Text"));
+                            }
+                        </label>
+                    </fieldset>
+                </div>
+
+
+                <button type="submit" class="btn">Применить</button>
+            }
+
+            @*Вывод рейтинга сети*@
+            @if (Model.Count != 0)
+            {
+            if (!networkName.Equals(""))
+            {
+                int? kitchenNetworkRating = 0;
+                int? interiorNetworkRating = 0;
+                int? serviceNetworkRating = 0;
+                //calculate ratings of given network
+                foreach (var v in Model)
+                {
+                    kitchenNetworkRating = kitchenNetworkRating + v.KitchenMark;
+                    interiorNetworkRating = interiorNetworkRating + v.InteriorMark;
+                    serviceNetworkRating = serviceNetworkRating + v.ServiceMark;
+                }
+                kitchenNetworkRating = kitchenNetworkRating / Model.Count;
+                interiorNetworkRating = interiorNetworkRating / Model.Count;
+                serviceNetworkRating = serviceNetworkRating / Model.Count;
+                //calculate common rating of given network
+                int? networkCriterion = (kitchenNetworkRating + interiorNetworkRating + serviceNetworkRating) / 3;
+                string fullNetworkName = "Рейтинг сети " + networkName;
+                string classMarks = "";
+                <h2>@fullNetworkName</h2><br/>
+            <table class="table stacktable stacktable2">
+                <tr>
+                    <th>Критерий</th>
+                    <th>Оценка</th>
+                </tr>
+                <tr>
+                    <td><h4>Кухня</h4></td>
+                    <td>
+                        @switch (kitchenNetworkRating)
+                        {
+                            case 1:
+                                classMarks = "star-rating star-rating1";
+                                break;
+                            case 2:
+                                classMarks = "star-rating star-rating2";
+                                break;
+                            case 3:
+                                classMarks = "star-rating star-rating3";
+                                break;
+                            case 4:
+                                classMarks = "star-rating star-rating4";
+                                break;
+                            case 5:
+                                classMarks = "star-rating star-rating5";
+                                break;
+                        }
+                        <span class="@classMarks">
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                        </span>
+                    </td>
+                 </tr>
+                <tr>
+                    <td><h4>Интерьер</h4></td>
+                    <td>
+                        @switch (interiorNetworkRating)
+                        {
+                            case 1:
+                                classMarks = "star-rating star-rating1";
+                                break;
+                            case 2:
+                                classMarks = "star-rating star-rating2";
+                                break;
+                            case 3:
+                                classMarks = "star-rating star-rating3";
+                                break;
+                            case 4:
+                                classMarks = "star-rating star-rating4";
+                                break;
+                            case 5:
+                                classMarks = "star-rating star-rating5";
+                                break;
+                        }
+                        <span class="@classMarks">
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><h4>Обслуживание</h4></td>
+                    <td>
+                        @switch (serviceNetworkRating)
+                        {
+                            case 1:
+                                classMarks = "star-rating star-rating1";
+                                break;
+                            case 2:
+                                classMarks = "star-rating star-rating2";
+                                break;
+                            case 3:
+                                classMarks = "star-rating star-rating3";
+                                break;
+                            case 4:
+                                classMarks = "star-rating star-rating4";
+                                break;
+                            case 5:
+                                classMarks = "star-rating star-rating5";
+                                break;
+                        }
+                        <span class="@classMarks">
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><h4>Общий рейтинг</h4></td>
+                    <td>
+                        @switch (networkCriterion)
+                        {
+                            case 1:
+                                classMarks = "star-rating star-rating1";
+                                break;
+                            case 2:
+                                classMarks = "star-rating star-rating2";
+                                break;
+                            case 3:
+                                classMarks = "star-rating star-rating3";
+                                break;
+                            case 4:
+                                classMarks = "star-rating star-rating4";
+                                break;
+                            case 5:
+                                classMarks = "star-rating star-rating5";
+                                break;
+                        }
+                        <span class="@classMarks">
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                        </span>
+                    </td>
+                </tr>
+                </table>
+            }
+            }
+        @*Вывод рейтинга сети*@
+
+
+        <div class="pager">
+            @Html.PagedListPager(Model, page => Url.Action("Rating", new { page }))
+        </div>
+
+        <table class="table stacktable stacktable2">
+            <tr>
+                <th>Название ресторана</th>
+                <th>Дата рецензии</th>
+                <th>Кухня</th>
+                <th>Интерьер</th>
+                <th>Обслуживание</th>
+                <th>Общий рейтинг</th>
+            </tr>
+@if (Model.Count != 0)
+{
+    foreach (var v in Model)
+    {
+        string link = "Review?num=" + @v.RestaurantId.ToString();
+        string classMarks = "";
+                <tr>
+                    <td><h5><a href=@link>@v.Name</a></h5></td>
+                    <td>@v.Date.Value.ToShortDateString()</td>
+                    <td>
+                        @switch (v.KitchenMark)
+                                {
+                                    case 1:
+                                        classMarks = "star-rating star-rating1";
+                                        break;
+                                    case 2:
+                                        classMarks = "star-rating star-rating2";
+                                        break;
+                                    case 3:
+                                        classMarks = "star-rating star-rating3";
+                                        break;
+                                    case 4:
+                                        classMarks = "star-rating star-rating4";
+                                        break;
+                                    case 5:
+                                        classMarks = "star-rating star-rating5";
+                                        break;
+                                }
+                        <span class="@classMarks">
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                        </span>
+                    </td>
+                    <td>
+                        @switch (v.InteriorMark)
+                                {
+                                    case 1:
+                                        classMarks = "star-rating star-rating1";
+                                        break;
+                                    case 2:
+                                        classMarks = "star-rating star-rating2";
+                                        break;
+                                    case 3:
+                                        classMarks = "star-rating star-rating3";
+                                        break;
+                                    case 4:
+                                        classMarks = "star-rating star-rating4";
+                                        break;
+                                    case 5:
+                                        classMarks = "star-rating star-rating5";
+                                        break;
+                                }
+                        <span class="@classMarks">
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                        </span>
+                    </td>
+                    <td>
+                        @switch (v.ServiceMark)
+                                {
+                                    case 1:
+                                        classMarks = "star-rating star-rating1";
+                                        break;
+                                    case 2:
+                                        classMarks = "star-rating star-rating2";
+                                        break;
+                                    case 3:
+                                        classMarks = "star-rating star-rating3";
+                                        break;
+                                    case 4:
+                                        classMarks = "star-rating star-rating4";
+                                        break;
+                                    case 5:
+                                        classMarks = "star-rating star-rating5";
+                                        break;
+                                }
+                        <span class="@classMarks">
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                        </span>
+                    </td>
+                    <td>
+                        @switch ((v.InteriorMark + v.KitchenMark + v.ServiceMark) / 3)
+                                {
+                                    case 1:
+                                        classMarks = "star-rating star-rating1";
+                                        break;
+                                    case 2:
+                                        classMarks = "star-rating star-rating2";
+                                        break;
+                                    case 3:
+                                        classMarks = "star-rating star-rating3";
+                                        break;
+                                    case 4:
+                                        classMarks = "star-rating star-rating4";
+                                        break;
+                                    case 5:
+                                        classMarks = "star-rating star-rating5";
+                                        break;
+                                }
+                        <span class="@classMarks">
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                        </span>
+                    </td>
+                </tr>
+                    }
+            }
+        </table>
+</div>
+        </div>
+    <div class="pager" >
+        @Html.PagedListPager(Model, page => Url.Action("Rating", new { page }))
+        </div>
+        
+    </section>

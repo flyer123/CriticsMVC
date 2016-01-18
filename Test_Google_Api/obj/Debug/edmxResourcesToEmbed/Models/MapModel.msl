@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="RestaurantsDBModelStoreContainer" CdmEntityContainer="RestaurantsDBEntities">
+    <EntitySetMapping Name="Addresses">
+      <EntityTypeMapping TypeName="RestaurantsDBModel.Addresses">
+        <MappingFragment StoreEntitySet="Addresses">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="address" ColumnName="address" />
+          <ScalarProperty Name="longtitude" ColumnName="longtitude" />
+          <ScalarProperty Name="latitude" ColumnName="latitude" />
+          <ScalarProperty Name="restaurantID" ColumnName="restaurantID" />
+          <ScalarProperty Name="imageId" ColumnName="imageId" />
+          <ScalarProperty Name="districtId" ColumnName="districtId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CustomLabels">
+      <EntityTypeMapping TypeName="RestaurantsDBModel.CustomLabels">
+        <MappingFragment StoreEntitySet="CustomLabels">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="recensioID" ColumnName="recensioID" />
+          <ScalarProperty Name="customLabel" ColumnName="customLabel" />
+          <ScalarProperty Name="dateOfCreation" ColumnName="dateOfCreation" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Districts">
+      <EntityTypeMapping TypeName="RestaurantsDBModel.Districts">
+        <MappingFragment StoreEntitySet="Districts">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Images">
+      <EntityTypeMapping TypeName="RestaurantsDBModel.Images">
+        <MappingFragment StoreEntitySet="Images">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="image1" ColumnName="image1" />
+          <ScalarProperty Name="image2" ColumnName="image2" />
+          <ScalarProperty Name="image3" ColumnName="image3" />
+          <ScalarProperty Name="image4" ColumnName="image4" />
+          <ScalarProperty Name="image5" ColumnName="image5" />
+          <ScalarProperty Name="image6" ColumnName="image6" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Recensio">
+      <EntityTypeMapping TypeName="RestaurantsDBModel.Recensio">
+        <MappingFragment StoreEntitySet="Recensio">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="addressID" ColumnName="addressID" />
+          <ScalarProperty Name="description" ColumnName="description" />
+          <ScalarProperty Name="kitchenMark" ColumnName="kitchenMark" />
+          <ScalarProperty Name="interiorMark" ColumnName="interiorMark" />
+          <ScalarProperty Name="serviceMark" ColumnName="serviceMark" />
+          <ScalarProperty Name="dateOfCreation" ColumnName="dateOfCreation" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Restaurants">
+      <EntityTypeMapping TypeName="RestaurantsDBModel.Restaurants">
+        <MappingFragment StoreEntitySet="Restaurants">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

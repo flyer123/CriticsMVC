@@ -1,0 +1,355 @@
+@import "_mixins.scss";
+@import "_variables.scss";
+
+/*========================================================
+                      Contact Form
+=========================================================*/
+
+$input-height: 40px;
+$input-offset-top: 20px;
+$input-padding: 8px 15px;
+$input-font-family: $default-font;
+$input-font-size: 14px;
+$input-line-height: 20px;
+$input-color: $default;
+$input-border-radius: 5px;
+$input-brdr: 1px solid #acacac;
+$input-font-weight: inherit;
+$input-background: rgba(0,0,0,.05);
+
+$textarea-height: 200px;
+
+$placeholder-clr: $input-color;
+$placeholder-opacity: 1;
+
+/* MF
+========================================================*/
+.mailform {
+  position: relative;
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+
+  fieldset {
+    border: none;
+  }
+
+  * {
+    @include box-sizing(border-box);
+  }
+
+  * + & {
+    margin-top: 30px;
+  }
+
+}
+
+.mailform label {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-top: $input-offset-top;
+
+  & + * {
+    margin-top: $input-offset-top;
+  }
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  input,  textarea, select {
+    display: block;
+    width: 100%;
+    margin: 0;
+    //-webkit-appearance: none;
+    outline: none;
+    font-family: $input-font-family;
+    font-size: $input-font-size;
+    padding: $input-padding;
+    line-height: $input-line-height;
+    color: $input-color;
+    background: $input-background;
+    border: $input-brdr;
+    @include border-radius($input-border-radius);
+
+    &:-moz-placeholder {
+      color: $placeholder-clr;
+      opacity: $placeholder-opacity;
+    }
+
+    &::-webkit-input-placeholder {
+      color: $placeholder-clr;
+      opacity: $placeholder-opacity;
+    }
+
+    &::-moz-placeholder {
+      color: $placeholder-clr;
+      opacity: $placeholder-opacity;
+    }
+
+    &:-ms-input-placeholder {
+      color: $placeholder-clr;
+      opacity: $placeholder-opacity;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    overflow: auto;
+    height: $textarea-height;
+  }
+
+  select {
+    position: relative;
+    @include transition(.3s);
+    cursor: pointer;
+    border-radius: 0;
+    display: inline-block;
+
+
+    &:hover {
+      background: transparent;
+      color: #2D2D2D;
+      @include box-shadow (3px 3px 3px rgba(0, 0, 0, 0.25));
+    }
+  }
+
+  &.select-label  {
+    min-width: 250px;
+    max-width: 260px;
+    position: relative;
+
+    /*&:before {
+      content: '\f107';
+      position: absolute;
+      right: 12px;
+      top: 8px;
+      width: 24px;
+      height: 24px;
+      font: 400 20px "FontAwesome";
+      line-height: 24px;
+      color: #2D2D2D;
+      text-align: center;
+      -moz-transition: 0.4s all ease;
+      -o-transition: 0.4s all ease;
+      -webkit-transition: 0.4s all ease;
+      transition: 0.4s all ease;
+    }*/
+  }
+
+  @media (max-width: 1365px) {
+    margin-top: 20px;
+  }
+
+  /*select {
+    display: inline-block;
+    margin: 0;
+    outline: none;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    padding: 5px 7px;
+    line-height: 20px;
+    color: #2f3c4f;
+    background: #f4f4f4;
+    border: 1px solid #acacac;
+    border-radius: 5px;
+  }
+
+  * + select {
+    margin-left: 10px;
+  }*/
+}
+
+.label-wrap {
+  margin-top: $input-offset-top;
+
+  label {
+    display: inline-block;
+
+    & + * {
+      margin: 0 0 0 20px;
+    }
+
+
+  }
+}
+
+
+.filter-form {
+
+    .fields {
+        & + * {
+            margin-top: 20px;
+        }
+
+        fieldset {
+            display: inline-block;
+
+            & + fieldset {
+                margin-left: 20px;
+            }
+
+            @media (max-width: 767px) {
+                display: block;
+
+                & + fieldset {
+                    margin-left: 0;
+                    margin-top: 20px;
+                }
+
+                label {
+                   display: block;
+                }
+            }
+        }
+    }
+}
+
+.feedback-form  {
+  label textarea {
+    height: 200px;
+  }
+}
+
+
+
+//@import "mailform_modules/_mf-animation.scss";
+//@import "mailform_modules/_mf-placeholder.scss";
+//@import "mailform_modules/_mf-validation.scss";
+//@import "mailform_modules/_mf-submit.scss";
+//@import "mailform_modules/_mf-icon.scss";
+//@import "mailform_modules/_mf-select.scss";
+//@import "mailform_modules/_mf-datepicker.scss";
+
+/* MF Controls
+========================================================*/
+
+.mfControls {
+  margin-top: 50px;
+  word-spacing: 10px;
+
+  > * {
+    word-spacing: normal;
+    margin-bottom: 5px;
+  }
+}
+
+/* Mail Form Validation
+  ========================================================*/
+
+.mfValidation {
+  @include transform-origin(0% 50%);
+  @include transition(.3s all ease);
+
+  position: absolute;
+  text-align: right;
+  top: auto;
+  left: auto;
+  bottom: 100%;
+  right: 10px;
+  width: 210px;
+  padding: 0;
+  margin: 0;
+  min-height: 0;
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 20px;
+  color:  $primary;
+  opacity: 0;
+  visibility: hidden;
+  cursor: pointer;
+  z-index: 998;
+
+  &:hover{
+    background: none;
+    right: 4px;
+  }
+
+  /*&.show {
+    @include transform(scale(1));
+    opacity: 1;
+    visibility: visible;
+    @include animation(notifanim .4s cubic-bezier(.55, 0, .1, 1) forwards);
+  }
+
+  &.hide{
+    @include animation(notifanim-fo .4s cubic-bezier(.55, 0, .1, 1) forwards);
+  }
+  
+  &.valid{
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  @media (max-width: 767px) {
+    text-align: right;
+    top: auto;
+    left: auto;
+    bottom: 100%;
+    right: 0;
+    background: none;
+    padding: 0;
+    margin: 0 0 3px;
+    min-height: 0;
+    @include box-shadow(none);
+    &:before {
+      display: none;
+    }
+
+    &:hover{
+      background: none;
+      right: 5px;
+    }
+  }*/
+}
+
+/*@include keyframes(notifanim-fo) {
+  0% {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+  }
+
+  20% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  99% {
+    visibility: hidden;
+  }
+
+  100% {
+    visibility: hidden;
+    transform: scale(.3);
+    opacity: 0;
+  }
+}
+
+@include keyframes(notifanim) {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(.3);
+  }
+
+  1% {
+    visibility: visible;
+  }
+
+  50% {
+    transform: scale(1);
+  }
+
+  75% {
+    transform: scale(.9);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}*/
+
+

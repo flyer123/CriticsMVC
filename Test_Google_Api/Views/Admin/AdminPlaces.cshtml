@@ -1,0 +1,525 @@
+﻿
+@{
+    ViewBag.Title = "AdminPlaces";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Test_Google_Api.Models.AdminModels.City> cities = (List<Test_Google_Api.Models.AdminModels.City>)ViewBag.Cities;
+    List<Test_Google_Api.Models.AdminModels.District> districts = (List<Test_Google_Api.Models.AdminModels.District>)ViewBag.Districts;
+}
+
+
+<main>
+    <section class="well">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                    <h3>Города</h3>
+                    <button id="open-modal2" class="btn" title="Добавить новый город">Добавить</button>
+                    <table id="cityTable" class="table stacktable stacktable1">
+                        <tr>
+                            <th>Город</th>
+                            <th>Действия</th>
+                        </tr>
+                        @foreach (var v in cities)
+                        {
+                            string rowId = v.Id.ToString() + "r";
+                            <tr id="@rowId">
+                                <td>@v.Name</td>
+                                <td>
+                                    <a class="link fa fa-pencil editCity" href="#modal-win2" title="Изменить" city="@v.Id" name="@v.Name"></a>
+                                    <a class="link fa fa-trash deleteCity" href="/Admin/RemoveCity/@v.Id" title="Удалить" id="@v.Id" name="@v.Name"></a>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                <div class="col-md-7">
+                    <h3>Районы</h3>
+                    <a id="open-modal3" class="open-modal btn" href="#modal-win3" title="Добавить новый район">Добавить</a>
+                    <form class='mailform create-form' method="post" action="/">
+                        <fieldset>
+                            <label class="select-label">
+                                @{List<SelectListItem> listItemsCities = new List<SelectListItem>();
+                                listItemsCities.Add(new SelectListItem
+                                {
+                                    Text = "Выберите город",
+                                    Value = "0"
+                                });
+                                foreach (var v in cities)
+                                {
+                                    listItemsCities.Add(new SelectListItem { Text = v.Name, Value = v.Id.ToString() });
+                                }
+                                @Html.DropDownList("city", new SelectList(listItemsCities, "Value", "Text"), new { @id = "citieslist" });}
+                            </label>
+                        </fieldset>
+                    </form>
+                    <table id="districtTable" class="table stacktable stacktable1">
+                        <tr>
+                            <th>Район</th>
+                            <th>Действия</th>
+                        </tr>
+                        @*@foreach (var v in districts)
+                        {
+                            <tr>
+                                <td>@v.Name</td>
+                                <td>
+                                    <a class="link fa fa-pencil" href="/Admin/EditDistrict/@v.Id" title="Изменить" id="@v.Id" name="@v.Name"></a>
+                                    <a class="link fa fa-trash" href="/Admin/RemoveDistrict/@v.Id" title="Удалить" id="@v.Id" name="@v.Name"></a>
+                                </td>
+                            </tr>
+                        }*@
+                    </table>
+                </div>
+            </div>
+            </div>
+    </section>
+    <div id="delete-city" title="Подтверждение">
+        <p>Вы уверены что хотите продолжить?</p>
+    </div>	
+    <div id="delete-district" title="Подтверждение">
+        <p>Вы уверены что хотите продолжить?</p>
+    </div>	
+
+    <div id="modal-city-dialog-edit" title="Редактировать город">
+        @using (Ajax.BeginForm("", "", null, new AjaxOptions { }, new { @class = "mailform" }))
+        {
+            <div>
+                <label>
+                    <label>Город</label>
+                    @Html.TextBox("cityEditName")
+                    <input type="hidden" id="cityEditId" />
+                </label>
+            </div>
+        }
+        <button type="submit" class="btn" id="smbEditCityButton">Изменить</button>
+    </div>
+    <div id="modal-city-dialog-create" title="Добавить город">
+        @using (Ajax.BeginForm("", "", null, new AjaxOptions { }, new { @class = "mailform" }))
+        {
+            <div>
+                <label>
+                    <label>Город</label>
+                    @Html.TextBox("cityAddName")
+                </label>
+            </div>
+        }
+        <button type="submit" class="btn" id="smbAddCityButton">Изменить</button>
+    </div>
+
+
+    <div id="modal-district-dialog-create" title="Добавить район">
+        @using (Ajax.BeginForm("", "", null, new AjaxOptions { }, new { @class = "mailform" }))
+        {
+            <div>
+                <label>
+                    <label>Район</label>
+                    @Html.TextBox("districtCreateName")
+                </label>
+            </div>
+        }
+        <button type="submit" class="btn" id="smbCreateDistrictButton">Изменить</button>
+    </div>
+    <div id="modal-district-dialog-edit" title="Редактировать район">
+        @using (Ajax.BeginForm("", "", null, new AjaxOptions { }, new { @class = "mailform" }))
+        {
+            <div>
+                <label>
+                    <label>Район</label>
+                    @Html.TextBox("districtEditName")
+                    <input type="hidden" id="districtEditId" />
+                    <input type="hidden" id="districtEditCityId" />
+                </label>
+            </div>
+        }
+        <button type="submit" class="btn" id="smbEditDistrictButton">Изменить</button>
+    </div>
+
+</main>
+<script>
+    var cityData = @Html.Raw(Json.Encode(cities));
+    var districtData = @Html.Raw(Json.Encode(districts));
+    var deleteLinkObj;
+    //change restaurants table based on network drop down list selection
+    $("#citieslist").on("change", function () {
+        $("#districtTable").find("tr:not(:first)").remove();
+        for(var v = 0; v < districtData.length; v++)
+        {
+            if(districtData[v].CityId == $('#citieslist option:selected').val()){
+                var row1 = "<tr><td>" + districtData[v].Name + "</td><td><a class=" +"\"" + "link fa fa-pencil editDist"+"\"" + "href=" +"\"" + "#modal-win4" +"\"" + " title=" +"\"" + "Изменить" +"\"" + "name=" +"\""+ districtData[v].Name +"\""+ "id=" +"\"" + districtData[v].Id +"\"" + "></a><a class=" + "\"" + "link fa fa-trash deleteDist" +"\"" + "href=" +"\"" +"/Admin/RemoveDistrict/" + districtData[v].Id +"\"" + "title=" +"\"" + "Удалить" +"\"" + "id=" +"\"" + districtData[v].Id +"\"" + "></a></td></tr>";
+                $("#districtTable").append(row1);
+            }
+        }
+        $(".link.fa.fa-trash.deleteDist").click(function () {
+            //objRef = jQuery(this).attr("href");
+            deleteLinkObj = $(this);  //for future use
+            //alert(objId);
+            $('#delete-district').dialog('open');
+            return false; // prevents the default behaviour
+        });
+        $(".link.fa.fa-pencil.editDist").click(function () {
+            editObj = $(this);
+            //var oldNetworkName = editObj[0].name;
+            var oldDistrictName = $(this).attr("name");
+            var idDistrict = $(this).attr("id");
+            var districtEditCityId = $('#citieslist option:selected').val();
+            $('#districtEditName').val(oldDistrictName);
+            $('#districtEditId').val(idDistrict);
+            $('#districtEditCityId').val(districtEditCityId);
+            $('#modal-district-dialog-edit').dialog("open");
+        });
+    });
+
+
+    $(document).ready(function () {
+
+        //var objRef;
+        // delete Link
+        $(".link.fa.fa-trash.deleteCity").click(function () {
+            //objRef = jQuery(this).attr("href");
+            deleteLinkObj = $(this);  //for future use
+            //alert(objId);
+            $('#delete-district').dialog('open');
+            return false; // prevents the default behaviour
+
+        });
+
+        //open modal window to edit name of city
+        $('#modal-city-dialog-edit').dialog({ autoOpen: false });
+        $(".link.fa.fa-pencil.editCity").click(function () {
+            editObj = $(this);
+            //var oldNetworkName = editObj[0].name;
+            var oldCityName = $(this).attr("name");
+            var idCity = $(this).attr("city");
+            $('#cityEditName').val(oldCityName);
+            $('#cityEditId').val(idCity);
+            $('#modal-city-dialog-edit').dialog("open");
+        });
+
+        //open model window to edit name of district
+        $('#modal-district-dialog-edit').dialog({ autoOpen: false });
+        $(".link.fa.fa-pencil.editDist").click(function () {
+            editObj = $(this);
+            //var oldNetworkName = editObj[0].name;
+            var oldDistrictName = $(this).attr("name");
+            var idDistrict = $(this).attr("id");
+            var districtEditCityId = $('#citieslist option:selected').val();
+            $('#districtEditName').val(oldDistrictName);
+            $('#districtEditId').val(idDistrict);
+            $('#districtEditCityId').val(districtEditCityId);
+            $('#modal-district-dialog-edit').dialog("open");
+        });
+
+
+        //open dialog to delete City
+        $('#delete-city').dialog({
+            autoOpen: false, width: 400, resizable: false, modal: true, //Dialog options
+            buttons: {
+                "Продолжить": function () {
+                    $.post(deleteLinkObj[0].href, function (data) {
+                        //Post to action
+                        if (data.toString().contains("Successfully removed!")) {
+                            deleteLinkObj.closest("tr").remove(); //Hide Row
+                            //remove from network dropdown list
+                            $select = $('#citieslist');
+                            //alert(deleteLinkObj[0].id);
+                            $select.find("option[value=" + deleteLinkObj[0].id + "]").remove();
+                            if( deleteLinkObj[0].id == $('#citieslist option:selected').val()){
+                                //clear the table if user removes selected network
+                                $("#districtTable").find("tr:not(:first)").remove();
+                            };
+                            for(var v = 0; v < cityData.length; v++){
+                                if(cityData[v].Id == deleteLinkObj[0].id){
+                                    cityData.splice(v, 1);
+                                }
+                            }
+                            //(optional) Display Confirmation
+                        }
+                        else {
+                            //(optional) Display Error
+                        }
+                    });
+
+                    $(this).dialog("close");
+                },
+                "Закрыть": function () {
+                    $(this).dialog("close");
+                }
+            },
+            open: function () {
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').addClass('btn');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-button');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-widget');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-state-default');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-button-text-only');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-corner-all');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-state-focus');
+
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').addClass('btn');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-button');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-widget');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-state-default');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-button-text-only');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-corner-all');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-state-focus');
+            }
+        });
+
+
+        //open delete district dialog
+        $('#delete-district').dialog({
+            autoOpen: false, width: 400, resizable: false, modal: true, //Dialog options
+            buttons: {
+                "Продолжить": function () {
+                    $.post(deleteLinkObj[0].href, function (data) {
+                        //Post to action
+                        if (data.toString().contains("Successfully removed!")) {
+                            deleteLinkObj.closest("tr").remove(); //Hide Row
+                            for(var v = 0; v < districtData.length; v++){
+                                if(districtData[v].Id == deleteLinkObj[0].id){
+                                    districtData.splice(v, 1);
+                                }
+                            }
+                        }
+                        else {
+                            //(optional) Display Error
+                        }
+                    });
+
+                    $(this).dialog("close");
+                },
+                "Закрыть": function () {
+                    $(this).dialog("close");
+                }
+            },
+            open: function () {
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').addClass('btn');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-button');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-widget');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-state-default');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-button-text-only');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-corner-all');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-state-focus');
+
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').addClass('btn');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-button');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-widget');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-state-default');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-button-text-only');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-corner-all');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-state-focus');
+            }
+        });
+
+
+
+    })
+
+
+    //edit city function
+    $(document).ready(function () {
+
+        $("#smbEditCityButton").click(function () {
+            if($("#cityEditName").val() == ""){
+                $.alert("Введите название города", "Ошибка")
+            }else{
+                var dataObject = {
+                    Name: $("#cityEditName").val(),
+                    Id: $('#cityEditId').val()
+                };
+                $.ajax({
+                    url: "@Url.Action("EditNetwork", "Admin")",
+                    type: "POST",
+                    data: dataObject,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.toString().contains("Successfully Saved!")) {
+                            //here we will split string in order to obtain id of new network
+                            var res = data.toString().split("!");
+                            var id = res[1];
+                            var idElement = $('#cityEditId').val();
+                            $('select[id="citieslist"]').find("option[value=" + $('#cityEditId').val() + "]").text($("#cityEditName").val());
+                            var linkToUpdate = $("a[city=" + idElement + "]");
+                            linkToUpdate.attr("name", $("#cityEditName").val());
+                            var rowId = idElement + "r";
+                            $('#cityTable').find('tr#' + rowId).find('td:eq(0)').html($("#cityEditName").val());
+                            $("#modal-city-dialog-edit").dialog("close");
+                        };
+                    },
+                    error: function () {
+                        alert("<div class='failed'>Error! Please try again</div>");
+                    }
+                });
+            }
+        })
+    })
+
+    //create city
+    $(document).ready(function () {
+        $("#modal-city-dialog-create").dialog({ autoOpen: false});
+        $("#open-modal2").click(function () {
+            $("#modal-city-dialog-create").dialog("open");
+        });
+    });
+    $(document).ready(function () {
+
+        $("#smbAddCityButton").click(function () {
+            if($("#cityAddName").val() == ""){
+                $.alert("Введите название Города", "Ошибка")
+            }else{
+                var dataObject = {
+                    Name: $("#cityAddName").val()
+                };
+                $.ajax({
+                    url: "@Url.Action("CreateCity", "Admin")",
+                    type: "POST",
+                data: dataObject,
+                dataType: "json",
+                success: function (data) {
+
+                    if (data.toString().contains("Successfully Saved!")) {
+                        //here we will split string in order to obtain id of new network
+                        var res = data.toString().split("!");
+                        var id = res[1];
+                        //adding part of the script
+                        $select = $('#citieslist');
+                        $select.append('<option id="' + id + '">' + $("#cityAddName").val() + '</option>');
+                        $("#modal-city-dialog-create").dialog("close");
+                    };
+                },
+                error: function () {
+                    alert("<div class='failed'>Error! Please try again</div>");
+                }
+            });
+        }
+        })
+    })
+
+    //create district
+    $(document).ready(function () {
+        $("#modal-district-dialog-create").dialog({ autoOpen: false});
+        $("#open-modal3").click(function () {
+            $("#modal-district-dialog-create").dialog("open");
+        });
+    });
+    $(document).ready(function () {
+        $('#smbCreateDistrictButton').click(function () {
+            if($("#districtCreateName").val() == ""){
+                $.alert("Введите название района", "Ошибка")
+            }else{
+                var dataObject = {
+                    Name: $("#districtEditName").val(),
+                    CityId: $('#citieslist option:selected').val()
+                };
+                $.ajax({
+                    url: "@Url.Action("CreateDistrict", "Admin")",
+                    type: "POST",
+                data: dataObject,
+                dataType: "json",
+                success: function (data) {
+                    if (data.toString().contains("Successfully Saved!")) {
+                        var res = data.toString().split("!");
+                        var id = res[1];
+                        districtData.push({Id: id, CityId: $('#citieslist option:selected').val(), Name: $("#districtEditName").val()});
+                        $("#districtTable").find("tr:not(:first)").remove();
+                        for(var v = 0; v < districtData.length; v++)
+                        {
+                            if(districtData[v].CityId == $('#citieslist option:selected').val()){
+                                if(districtData[v].Id == idElement){
+                                    districtData[v].Name = $("#districtEditName").val();
+                                }
+                                var row1 = "<tr><td>" + districtData[v].Name + "</td><td><a class=" +"\"" + "link fa fa-pencil editDist"+"\"" + "href=" +"\"" + "#modal-win4" +"\"" + " title=" +"\"" + "Изменить" +"\"" + "name=" +"\""+ districtData[v].Name +"\""+ "id=" +"\"" + districtData[v].Id +"\"" + "></a><a class=" + "\"" + "link fa fa-trash deleteDist" +"\"" + "href=" +"\"" +"/Admin/RemoveDistrict/" + districtData[v].Id +"\"" + "title=" +"\"" + "Удалить" +"\"" + "id=" +"\"" + districtData[v].Id +"\"" + "></a></td></tr>";
+                                $("#districtTable").append(row1);
+                            }
+                        }
+                        $(".link.fa.fa-trash.deleteDist").click(function () {
+                            //objRef = jQuery(this).attr("href");
+                            deleteLinkObj = $(this);  //for future use
+                            //alert(objId);
+                            $('#delete-district').dialog('open');
+                            return false; // prevents the default behaviour
+
+                        });
+                        $(".link.fa.fa-pencil.editDist").click(function () {
+                            editObj = $(this);
+                            //var oldNetworkName = editObj[0].name;
+                            var oldDistrictName = $(this).attr("name");
+                            var idDistrict = $(this).attr("id");
+                            var districtEditCityId = $('#citieslist option:selected').val();
+                            $('#districtEditName').val(oldDistrictName);
+                            $('#districtEditId').val(idDistrict);
+                            $('#districtEditCityId').val(districtEditCityId);
+                            $('#modal-district-dialog-edit').dialog("open");
+                        });
+                        $("#modal-district-dialog-create").dialog("close");
+                    }
+                },
+                error: function () {
+                    alert("<div class='failed'>Error! Please try again</div>");
+                }
+                });
+            }
+        })
+
+    })
+
+    //Edit district
+    $(document).ready(function () {
+
+        $("#smbEditDistrictButton").click(function () {
+            if($("#districtEditName").val() == ""){
+                $.alert("Введите название района", "Ошибка")
+            }else{
+                var dataObject = {
+                    Name: $("#districtEditName").val(),
+                    Id: $('#districtEditId').val(),
+                    CityId: $('#districtEditCityId').val()
+                };
+                $.ajax({
+                    url: "@Url.Action("EditDistrict", "Admin")",
+                    type: "POST",
+                    data: dataObject,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.toString().contains("Successfully Saved!")) {
+                            var idElement = $('#districtEditId').val();
+                            $("#districtTable").find("tr:not(:first)").remove();
+                            for(var v = 0; v < districtData.length; v++)
+                            {
+                                if(districtData[v].CityId == $('#citieslist option:selected').val()){
+                                    if(districtData[v].Id == idElement){
+                                        districtData[v].Name = $("#districtEditName").val();
+                                    }
+                                    var row1 = "<tr><td>" + districtData[v].Name + "</td><td><a class=" +"\"" + "link fa fa-pencil editDist"+"\"" + "href=" +"\"" + "#modal-win4" +"\"" + " title=" +"\"" + "Изменить" +"\"" + "name=" +"\""+ districtData[v].Name +"\""+ "id=" +"\"" + districtData[v].Id +"\"" + "></a><a class=" + "\"" + "link fa fa-trash deleteDist" +"\"" + "href=" +"\"" +"/Admin/RemoveDistrict/" + districtData[v].Id +"\"" + "title=" +"\"" + "Удалить" +"\"" + "id=" +"\"" + districtData[v].Id +"\"" + "></a></td></tr>";
+                                    $("#districtTable").append(row1);
+                                }
+                            }
+                            $(".link.fa.fa-trash.deleteDist").click(function () {
+                                //objRef = jQuery(this).attr("href");
+                                deleteLinkObj = $(this);  //for future use
+                                //alert(objId);
+                                $('#delete-district').dialog('open');
+                                return false; // prevents the default behaviour
+
+                            });
+                            $(".link.fa.fa-pencil.editDist").click(function () {
+                                editObj = $(this);
+                                //var oldNetworkName = editObj[0].name;
+                                var oldDistrictName = $(this).attr("name");
+                                var idDistrict = $(this).attr("id");
+                                var districtEditCityId = $('#citieslist option:selected').val();
+                                $('#districtEditName').val(oldDistrictName);
+                                $('#districtEditId').val(idDistrict);
+                                $('#districtEditCityId').val(districtEditCityId);
+                                $('#modal-district-dialog-edit').dialog("open");
+                            });
+                            $("#modal-district-dialog-edit").dialog("close");
+                        };
+                    },
+                    error: function () {
+                        alert("<div class='failed'>Error! Please try again</div>");
+                    }
+                });
+            }
+        })
+    })
+
+</script>

@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewBag.Title = "Поиск рецензии";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Test_Google_Api.Models.AdminModels.Restaurant> restaurants = ViewBag.Restaurants;
+}
+@model Test_Google_Api.Models.AdminModels.Restaurant
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<!--========================================================
+                            CONTENT
+  =========================================================-->
+<main>
+    <section class="well">
+        <div class="container">
+            <h3>Изменить существующую рецензию</h3>
+            @*<form class='mailform create-form' method="post" action="/">*@
+                @using(Html.BeginForm("EditReview","Admin", FormMethod.Get, new{@class = "mailform create-form"})) {               
+                    @*<input type="hidden" name="form-type" value="" />*@
+                <fieldset>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <h5>Выберите ресторан для поиска и изменения рецензии:</h5>
+                            <label class="select-label">
+                                    @{List<SelectListItem> listItemsNames = new List<SelectListItem>();
+                                      listItemsNames.Add(new SelectListItem
+                                    {
+                                        Text = "Название ресторана",
+                                        Value = "0"
+                                    });
+                                    foreach (var v in restaurants)
+                                    {
+                                        listItemsNames.Add(new SelectListItem { Text = v.Name, Value = v.Id.ToString() });
+                                    }
+                                    @Html.DropDownList("name", new SelectList(listItemsNames, "Value", "Text"), new { @id = "namelist" });}
+                            </label>
+                            <label class="select-label">
+                                @{List<SelectListItem> listItemsAddresses = new List<SelectListItem>();
+                                  listItemsAddresses.Add(new SelectListItem
+                                    {
+                                        Text = "Адрес",
+                                        Value = "0"
+                                    });
+                                      @Html.DropDownList("id", new SelectList(listItemsAddresses, "Value", "Text"), new { @id = "addresslist" });
+                                }
+                            </label>
+                            <div class="mfControls">
+                                <button class="btn" type="submit">Изменить рецензию</button>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                }
+            @*</form>*@
+
+        </div>
+    </section>
+</main>
+<script>
+    var data = @Html.Raw(Json.Encode(restaurants));
+    $("#namelist").on("change", function () {
+        for(var v = 0; v < data.length; v++)
+        {
+            if(data[v].Name == $('#namelist option:selected').text()){
+                $("#addresslist").empty();
+                $("<option value=" + data[v].Id + ">" + data[v].Address + "</option>").appendTo("#addresslist");
+            }
+        }
+    });
+</script>
+

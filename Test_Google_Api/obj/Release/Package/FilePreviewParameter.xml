@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="mymvccritic" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^d:\\work\\Test_Google_api_azure\\Test_Google_Api\\Test_Google_Api\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^d:\\work\\Test_Google_api_azure\\Test_Google_Api\\Test_Google_Api\\obj\\Release\\Package\\PackageTmp$" />
+  </parameter>
+  <parameter name="DefaultConnection-Web.config Connection String" description="" value="Server=br-cdbr-azure-south-a.cloudapp.net; Database=acsm_7deb37ee3eba7a0;Uid=b56dd965ab7022;Pwd=13a26704;" tags="">
+    <parameterEntry kind="XmlFile" scope="d:\\work\\Test_Google_api_azure\\Test_Google_Api\\Test_Google_Api\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
+  </parameter>
+  <parameter name="restaurants_dbEntities-Web.config Connection String" description="" value="metadata=res://*/Models.DB.Restaurants_MySql_Model.csdl|res://*/Models.DB.Restaurants_MySql_Model.ssdl|res://*/Models.DB.Restaurants_MySql_Model.msl;provider=MySql.Data.MySqlClient;provider connection string=&quot;server=br-cdbr-azure-south-a.cloudapp.net;user id=bff009fc09f7cb;password=6d040bd9;persistsecurityinfo=True;database=restaurants&quot;" tags="">
+    <parameterEntry kind="XmlFile" scope="d:\\work\\Test_Google_api_azure\\Test_Google_Api\\Test_Google_Api\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='restaurants_dbEntities']/@connectionString" />
+  </parameter>
+  <parameter name="LocalMySqlServer-Web.config Connection String" description="LocalMySqlServer Connection String used in web.config by the application to access the database." value="" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="d:\\work\\Test_Google_api_azure\\Test_Google_Api\\Test_Google_Api\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='LocalMySqlServer']/@connectionString" />
+  </parameter>
+  <parameter name="Test_Google_Api.Models.DB.RestaurantsDBEntities-Web.config Connection String" description="Test_Google_Api.Models.DB.RestaurantsDBEntities Connection String used in web.config by the application to access the database." value="Test_Google_Api.Models.DB.RestaurantsDBEntities_ConnectionString" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="d:\\work\\Test_Google_api_azure\\Test_Google_Api\\Test_Google_Api\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='Test_Google_Api.Models.DB.RestaurantsDBEntities']/@connectionString" />
+  </parameter>
+</parameters>

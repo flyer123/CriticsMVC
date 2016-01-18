@@ -1,0 +1,101 @@
+﻿@model Test_Google_Api.Models.SaveModels.CustomLabelModel
+@{
+    var CustomLabels = (List<Test_Google_Api.Models.SaveModels.CustomLabelModel>)ViewBag.Users;
+    var id = ViewBag.ID;
+}
+<section class="well2">
+    <div class="container tc">
+        <div class="divider">
+            <span class="fl flaticon-restaurant35"></span>
+        </div>
+        <div class="row">
+            <div class="row">
+                <div class="col-xs-12 col-sm-4">
+                    <h4>Оставьте отзыв:</h4>
+                    @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "SubmitForm", @class = "mailform feedback-form" }))
+                    {
+                        <fieldset>
+                            <label>
+                                @Html.TextBoxFor(model => model.Name, new { @placeholder = "Имя" })
+                                @Html.ValidationMessageFor(model => model.Name)
+                            </label>
+                            <label>
+                                @Html.TextBoxFor(model => model.E_mail, new { @placeholder = "E-mail" })
+                                @Html.ValidationMessageFor(model => model.E_mail)
+                            </label>
+                            <label>
+                                @Html.TextAreaFor(model => model.LabelText, new { @placeholder = "Комментарий" })
+                                @Html.ValidationMessageFor(model => model.LabelText)
+                            </label>
+                            <div class="mfControls">
+                                <input type="button" class="btn" value="Отправить" id="AjaxPost" />
+                            </div>
+                        </fieldset>
+
+                    }
+                </div>
+                <div class="col-xs-12 col-sm-8">
+                    <h4>Отзывы посетителей:</h4>
+                    <ul id="lists" class="feedback">
+                        @foreach (var v in CustomLabels)
+                        {
+                            <li>
+                                <div class="feedback-info">
+                                    <div class="feedback-name">
+                                        @v.Name
+                                    </div>
+                                    <div class="feedback-date">
+                                        <time datetime="2015-10-10">@v.Date</time>
+                                    </div>
+                                </div>
+                                <div class="feedback-text">
+                                    <p>@v.LabelText</p>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#AjaxPost").click(function () {            
+            if (
+            $("#SubmitForm").valid()) {
+                var dataObject = {
+                    LabelText: $("#LabelText").val(),
+                    E_mail: $("#E_mail").val(),
+                    Name: $("#Name").val(),
+                    ReviewID: "@ViewBag.ID"
+                };
+                $.ajax({
+                    url: "@Url.Action("SaveLabel", "Home", id)",
+                    type: "POST",
+                    data: dataObject,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.toString() == "Successfully Saved!") {
+                            $("ul#lists").prepend('<li><div class="feedback-info"><div class="feedback-name">' +
+                                            $("#Name").val() +
+                                        '</div><div class="feedback-date"><time datetime="2015-10-10">' +
+                                            new Date().toLocaleString() +
+                                            '</time></div></div><div class="feedback-text"><p>' +
+                                        $("#LabelText").val() +
+                                        '</p></div></li>');
+                        }
+                        else {
+                            $("#name").html();
+                        }
+                    },
+                    error: function () {
+                        alert("<div class='failed'>Error! Please try again</div>");
+                    }
+                });
+
+            }
+
+        })
+    })
+</script>

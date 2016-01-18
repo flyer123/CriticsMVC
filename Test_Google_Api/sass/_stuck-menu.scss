@@ -1,0 +1,49 @@
+/*==================  Stuck menu  ======================*/
+$stuck-bg: #f8f8f8;
+$stuck-bc: #333333;
+
+.stuck_container {
+
+}
+
+.isStuck {
+  background: $stuck-bg;
+  z-index: 999;
+  border-bottom: 1px solid $stuck-bc;
+  padding: 3px 0 5px;
+
+  .brand_slogan, .search-form {
+  	display: none;
+  }
+
+  .nav {
+  	padding-top: 10px;
+  }
+
+  .brand {
+    padding-left: 70px;
+  }
+
+  .brand_name {
+  	line-height: 26px;
+
+  	span {
+	  	font-size: 38px;
+      line-height: 34px;
+
+	  }
+  }
+
+  .logo {
+  	&:before {
+  		font-size: 60px;
+  		line-height: 62px;
+  	}
+  }
+}
+
+@media only screen and (max-width: 979px) {
+  .isStuck {
+    display: none !important;
+  }
+}

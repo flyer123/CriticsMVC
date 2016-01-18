@@ -1,0 +1,21 @@
+﻿@model Test_Google_Api.Models.SaveModels.CustomLabelModel
+@{
+    ViewBag.Title = "Редактировать выбраный комментарий";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<main>
+    <section class="well">
+        <div class="container">
+            <h3>Редактировать комментарий</h3>
+            <div class="row">
+                <div class="col-xs-12 col-sm-5">
+                    @using (Html.BeginForm("UpdateComment", "Admin", null, FormMethod.Post, new { @class = "mailform" }))
+                    {
+                        @Html.TextAreaFor(m => m.LabelText)
+                        <button class="btn" type="submit">Отправить</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

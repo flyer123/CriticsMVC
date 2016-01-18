@@ -1,0 +1,109 @@
+﻿
+@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.EntityFramework
+@using Microsoft.Owin.Security;
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var statusMessage = string.Empty;
+    if (IsPost)
+    {
+        var userStore = new UserStore<IdentityUser>();
+        var manager = new UserManager<IdentityUser>(userStore);
+        manager.PasswordValidator = new PasswordValidator
+        {
+            RequireDigit = true,
+            RequiredLength = 10,
+            RequireLowercase = true,
+            RequireNonLetterOrDigit = true,
+            RequireUppercase = true
+        };
+        var user = new IdentityUser()
+        {
+            UserName = Request["UserName"]
+        };
+        IdentityResult result = manager.Create(user, Request["Password"]);
+
+        if (result.Succeeded)
+        {
+            var authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
+            var userIdentity = manager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
+            authenticationManager.SignIn(new AuthenticationProperties() { }, userIdentity);
+            Response.Redirect("~/Admin/Login");
+        }
+        else
+        {
+            statusMessage = result.Errors.FirstOrDefault();
+        }
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    @*<style>
+        body {
+            font: 0.9em Calibri;
+        }
+    </style>*@
+</head>
+
+<body>
+    <section class="well">
+        <div class="container">
+            <h3>Создать новую учетную запись</h3>
+            <p>
+                @statusMessage
+            </p>
+            <div class="row">
+                <div class="col-xs-12 col-sm-5">
+                    <form method="post" class='mailform login-form'>
+                        <fieldset>
+                            <label>
+                                @Html.TextBox("UserName", "", new { @placeholder = "Логин" })
+                            </label>
+                            <label>
+                                @Html.Password("Password", "", new { @placeholder = "Пароль" })
+                            </label>
+                            <div class="mfControls">
+                                <button class="btn" name="Action" type="Submit" value="Register">Создать</button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    @*<form method="post">
+        <fieldset>
+            <legend>Register a new user</legend>
+            <p>
+                @statusMessage
+            </p>
+            <div style="margin-bottom:10px">
+                @Html.Label("User Name", "UserName")
+                <div>
+                    @Html.TextBox("UserName")
+                </div>
+            </div>
+            <div style="margin-bottom:10px">
+                @Html.Label("Password", "Password")
+                <div>
+                    @Html.Password("Password")
+                </div>
+            </div>
+            <div>
+                <div>
+                    <input type="Submit" value="Register" />
+                </div>
+            </div>
+        </fieldset>
+    </form>*@
+</body>
+</html>
+
+
+

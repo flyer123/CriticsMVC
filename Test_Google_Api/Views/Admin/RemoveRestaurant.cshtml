@@ -1,0 +1,372 @@
+﻿
+@{
+    ViewBag.Title = "Удаление рецензии";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var networks = ViewBag.Networks;
+    var restaurants = ViewBag.Restaurants;
+}
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <main>
+        <section class="well">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <h3>Сеть ресторанов</h3>
+                        <a id="open-modal1" class="open-modal btn" href="#modal-win1" title="Добавить новую сеть">Добавить</a>
+                        <table id="networkTable" class="table stacktable stacktable1">
+                            <tr>
+                                <th>Cеть</th>
+                                <th>Действия</th>
+                            </tr>
+                            @foreach (var v in networks)
+                            {
+                                if (v.Id != 1)
+                                {
+                                    string rowId = v.Id.ToString() + "r";
+                                    <tr id="@rowId">
+                                        <td>@v.Name</td>
+                                        <td>
+                                            <a class="link fa fa-pencil netEdit" href="#modal-win2" title="Изменить" net="@v.Id" name="@v.Name"></a>
+                                            <a class="link fa fa-trash netDelete" href="/Admin/RemoveNetwork/@v.Id" title="Удалить" id="@v.Id"></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </table>
+                    </div>
+                    <div class="col-lg-8">
+                        <h3>Рестораны</h3>
+                        <form class='mailform create-form'>
+                            <fieldset>
+                                <label class="select-label">
+                                    @{List<SelectListItem> listItemsNetworks = new List<SelectListItem>();
+                                    listItemsNetworks.Add(new SelectListItem
+                                    {
+                                        Text = "Выберите сеть",
+                                        Value = "0"
+                                    });
+                                    foreach (var v in networks)
+                                    {
+                                        if (v.Id == 1)
+                                        {
+                                            listItemsNetworks.Add(new SelectListItem { Text = "Не сетевой ресторан", Value = v.Id.ToString() });
+                                        }
+                                        else
+                                        {
+                                            listItemsNetworks.Add(new SelectListItem { Text = v.Name, Value = v.Id.ToString() });
+
+                                        }
+                                    }
+                                    @Html.DropDownList("network", new SelectList(listItemsNetworks, "Value", "Text"), new { @id = "networklist" });}
+                                </label>
+                            </fieldset>
+                            </form>
+                            <table id="restTable" class="table stacktable stacktable1">
+                                <tr>
+                                    <th>Ресторан</th>
+                                    <th>Адрес</th>
+                                    <th>Действия</th>
+                                </tr>
+                                @*@foreach (var v in restaurants)
+                                {
+                                    <tr>
+                                        <td>@v.Name</td>
+                                        <td>@v.Address</td>
+                                        <td>
+                                            <a class="link fa fa-pencil" href="/Admin/EditReview/@v.Id" title="Изменить" id="@v.Id"></a>
+                                            <a class="link fa fa-trash" href="/Admin/RemoveReview/@v.Id" title="Удалить" id="@v.Id"></a>                                            
+                                        </td>
+                                    </tr>
+                                }*@
+                            </table>
+</div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<div id="delete-dialog" title="Подтверждение">
+    <p>Вы уверены что хотите продолжить?</p>
+</div>	
+
+<div id="delete-review" title="Подтверждение">
+    <p>Вы уверены что хотите продолжить?</p>
+</div>		
+
+<div id="modal-network-dialog-edit" title="Редактировать сеть">
+    @using (Ajax.BeginForm("", "", null, new AjaxOptions { }, new { @class = "mailform" }))
+    {
+        <div>
+            <label>
+                <label>Сеть</label>
+                @Html.TextBox("networkEditName")
+                <input type="hidden" id="networkEditId" />
+            </label>
+        </div>
+    }
+    <button type="submit" class="btn" id="smbEditNetworkButton">Изменить</button>
+</div>
+
+<div id="modal-network-dialog" title="Добавить новую сеть">
+    @using (Ajax.BeginForm("", "", null, new AjaxOptions { }, new { @class = "mailform" }))
+    {
+        <div>
+            <label>
+                <label>Сеть</label>
+                @Html.TextBox("networkName")
+            </label>
+        </div>
+    }
+    <button type="submit" class="btn" id="smbNetworkButton">Добавить</button>
+</div>
+
+
+
+<script>
+    var restData = @Html.Raw(Json.Encode(restaurants));
+    var netData = @Html.Raw(Json.Encode(networks));
+    var deleteLinkObj;
+    //change restaurants table based on network drop down list selection
+    $("#networklist").on("change", function () {
+        $("#restTable").find("tr:not(:first)").remove();
+        for(var v = 0; v < restData.length; v++)
+        {
+            if(restData[v].NetworkId == $('#networklist option:selected').val()){    
+                var row1 = "<tr><td>"+ restData[v].Name+"</td><td>"+ restData[v].Address +"</td><td><a class=" +"\"" + "link fa fa-pencil"+"\"" + "href=" +"\"" + "/Admin/EditReview/"+ restData[v].Id +"\"" + " title=" +"\"" + "Изменить" +"\"" + "id=" +"\"" +restData[v].Id +"\"" + "></a><a class=" + "\"" + "link fa fa-trash restDelete" +"\"" + "href=" +"\"" +"/Admin/RemoveReview/" + restData[v].Id +"\"" + "title=" +"\"" + "Удалить" +"\"" + "id=" +"\"" + restData[v].Id +"\"" + "></a></td></tr>";
+                $("#restTable").append(row1);
+            }
+        }
+        $(".link.fa.fa-trash.restDelete").click(function () {
+            //objRef = jQuery(this).attr("href");
+            deleteLinkObj = $(this);  //for future use
+            //alert(objId);
+            $('#delete-dialog').dialog('open');
+            return false; // prevents the default behaviour
+
+        });
+    });
+
+
+    $(document).ready(function () {
+        
+        //var objRef;
+        // delete Link
+        $(".link.fa.fa-trash.netDelete").click(function () {
+            //objRef = jQuery(this).attr("href");
+            deleteLinkObj = $(this);  //for future use
+            //alert(objId);
+            $('#delete-dialog').dialog('open');
+            return false; // prevents the default behaviour
+
+        });
+
+        //open modal window to edit name of network
+        $('#modal-network-dialog-edit').dialog({ autoOpen: false });
+        $(".link.fa.fa-pencil.netEdit").click(function () {
+            editObj = $(this);
+            //var oldNetworkName = editObj[0].name;
+            var oldNetworkName = $(this).attr("name");
+            var idNetwork = $(this).attr("net");
+            $('#networkEditName').val(oldNetworkName);
+            $('#networkEditId').val(idNetwork);
+            $('#modal-network-dialog-edit').dialog("open");
+        });
+
+
+        $('#delete-dialog').dialog({
+            autoOpen: false, width: 400, resizable: false, modal: true, //Dialog options
+            buttons: {
+                "Продолжить": function () {
+                    $.post(deleteLinkObj[0].href, function (data) {
+                        //Post to action
+                        if (data.toString().contains("Successfully removed!")) {
+                            deleteLinkObj.closest("tr").hide('fast'); //Hide Row
+                            //remove from network dropdown list
+                            $select = $('#networklist');
+                            //alert(deleteLinkObj[0].id);
+                            $select.find("option[value=" + deleteLinkObj[0].id + "]").remove();
+                            if( deleteLinkObj[0].id == $('#networklist option:selected').val()){
+                                //clear the table if user removes selected network
+                                $("#restTable").find("tr:not(:first)").remove();
+                            };
+                            for(var v = 0; v < netData.length; v++){
+                                if(netData[v].Id == deleteLinkObj[0].id){
+                                    netData.splice(v, 1);
+                                }
+                            }
+                            //(optional) Display Confirmation
+                        }
+                        else {
+                            //(optional) Display Error
+                        }
+                    });
+
+                    $(this).dialog("close");
+                },
+                "Закрыть": function () {
+                    $(this).dialog("close");
+                }
+            },
+            open: function () {
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').addClass('btn');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-button');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-widget');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-state-default');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-button-text-only');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-corner-all');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-state-focus');
+
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').addClass('btn');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-button');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-widget');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-state-default');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-button-text-only');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-corner-all');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-state-focus');
+            }
+        });
+
+        $('#delete-review').dialog({
+            autoOpen: false, width: 400, resizable: false, modal: true, //Dialog options
+            buttons: {
+                "Продолжить": function () {
+                    $.post(deleteLinkObj[0].href, function (data) {
+                        //Post to action
+                        if (data.toString().contains("Successfully removed!")) {
+                            deleteLinkObj.closest("tr").remove(); //Hide Row
+                            for(var v = 0; v < restData.length; v++){
+                                if(restData[v].Id == deleteLinkObj[0].id){
+                                    restData.splice(v, 1);
+                                }
+                            }
+                        }
+                        else {
+                            //(optional) Display Error
+                        }
+                    });
+
+                    $(this).dialog("close");
+                },
+                "Закрыть": function () {
+                    $(this).dialog("close");
+                }
+            },
+            open: function () {
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').addClass('btn');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-button');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-widget');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-state-default');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-button-text-only');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-corner-all');
+                $('.ui-dialog-buttonset').find('button:contains("Продолжить")').removeClass('ui-state-focus');
+
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').addClass('btn');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-button');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-widget');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-state-default');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-button-text-only');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-corner-all');
+                $('.ui-dialog-buttonset').find('button:contains("Закрыть")').removeClass('ui-state-focus');
+            }
+        });
+
+
+
+    })
+
+
+    //edit network function
+    $(document).ready(function () {
+
+        $("#smbEditNetworkButton").click(function () {
+            if($("#networkEditName").val() == ""){
+                $.alert("Введите название сети", "Ошибка")
+            }else{
+                var dataObject = {
+                    Name: $("#networkEditName").val(),
+                    Id: $('#networkEditId').val()
+                };
+                $.ajax({
+                    url: "@Url.Action("EditNetwork", "Admin")",
+                    type: "POST",
+                    data: dataObject,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.toString().contains("Successfully Saved!")) {
+                            //here we will split string in order to obtain id of new network
+                            var res = data.toString().split("!");
+                            var id = res[1];
+                            var idElement = $('#networkEditId').val();
+                            $('select[id="networklist"]').find("option[value=" + $('#networkEditId').val() + "]").text($("#networkEditName").val());
+                            var linkToUpdate = $("a[net=" + idElement + "]");
+                            linkToUpdate.attr("name", $("#networkEditName").val());
+                            var rowId = idElement + "r";
+                            $('#networkTable').find('tr#' + rowId).find('td:eq(0)').html($("#networkEditName").val());
+                            for(var v = 0; v < netData.length; v++){
+                                if(netData[v].Id == idElement){
+                                    netData[v].Name = $("#networkEditName").val();
+                                }
+                            }
+
+                            $("#modal-network-dialog-edit").dialog("close");
+                        };
+                    },
+                    error: function () {
+                        alert("<div class='failed'>Error! Please try again</div>");
+                    }
+                });
+            }
+        })
+    })
+
+    //create network
+    $(document).ready(function () {
+        $("#modal-network-dialog").dialog({ autoOpen: false});
+        $("#open-modal1").click(function () {
+            $("#modal-network-dialog").dialog("open");
+        });
+    });
+    $(document).ready(function () {
+
+        $("#smbNetworkButton").click(function () {
+            if($("#networkName").val() == ""){
+                $.alert("Введите название сети", "Ошибка")
+            }else{
+                var dataObject = {
+                    Name: $("#networkName").val()
+                };
+                $.ajax({
+                    url: "@Url.Action("CreateNetwork", "Admin")",
+                    type: "POST",
+                    data: dataObject,
+                    dataType: "json",
+                    success: function (data) {
+
+                        if (data.toString().contains("Successfully Saved!")) {
+                            //here we will split string in order to obtain id of new network
+                            var res = data.toString().split("!");
+                            var id = res[1];
+                            //adding part of the script
+                            $select = $('#networklist');
+                            $select.append('<option id="' + id + '">' + $("#networkName").val() + '</option>');
+                            netData.push({Id: id, Name: $("#networkName").val()});
+                            //$("#netTable").find("tr:not(:first)").remove();
+                            var row = "<td>" +$("#networkName").val() +"</td><td><a class=" + "\"" + "link fa fa-pencil netEdit" + "\"" + "href= " + "\"" + "#modal-win2" + "\"" +  "title=" + "\"" + "Изменить" + "\"" +  "net=" + "\"" + id + "\"" + "name=" + "\"" + $("#networkName").val() + "\"" + "></a>" + "<a class=" + "\"" + "link fa fa-trash netDelete" +"\"" +  "href=" + "\"" + "/Admin/RemoveNetwork/" + id + "\"" +  "title=" + "\"" + "Удалить" + "\"" + "id=" + "\""+id + "\"" + "></a></td>";
+                                $("#networkTable").append(row);
+
+                            $("#modal-network-dialog").dialog("close");
+                        };
+                    },
+                    error: function () {
+                        alert("<div class='failed'>Error! Please try again</div>");
+                    }
+                });
+            }
+        })
+    })
+</script>
+

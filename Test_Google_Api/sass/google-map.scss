@@ -1,0 +1,40 @@
+/*==================  GOOGLE MAP  ======================*/
+$map-height: 600px;
+$map-height-767: 550px;
+$map-height-479: 500px;
+
+.map {
+  &_model{
+    height: $map-height;
+
+    img {
+      max-width: none !important;
+    }
+
+    @media (max-width: 767px) {
+      height: $map-height-767;
+    }
+
+    @media (max-width: 479px) {
+      height: $map-height-479;
+    }
+  }
+
+  &_model_2{
+    height: 400px;
+
+    img {
+      max-width: none !important;
+    }
+
+    @media (max-width: 767px) {
+      height: 350px;
+    }
+
+    @media (max-width: 479px) {
+      height: 300px;
+    }
+  }
+
+}
+

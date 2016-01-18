@@ -1,0 +1,40 @@
+﻿@model Test_Google_Api.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Зарегистрироваться";
+}
+<h2>@ViewBag.Title</h2>
+<main>
+    <section class="well">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-5">
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "mailform login-form", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <h4>Создать нового пользователя</h4>
+                        @*<hr />*@
+                        @Html.ValidationSummary("", new { @class = "text-danger" })
+                        <fieldset>
+                            <label>
+                                @Html.TextBoxFor(m => m.Email, new { @placeholder = "email" })
+                            </label>
+                        </fieldset>
+                        <fieldset>
+                            <label>
+                                @Html.PasswordFor(m => m.Password, new { @placeholder = "password" })
+                            </label>
+                        </fieldset>
+                        <fieldset>
+                            <label>
+                                @Html.PasswordFor(m => m.ConfirmPassword, new { @placeholder = "retype password" })
+                            </label>
+                        </fieldset>
+                        <div class="mfControls tc">
+                            <button type="submit" class="btn">Зарегистрировать</button>
+                        </div>
+                    }
+                </div>
+            </div>
+            </div>
+            </section>
+</main>

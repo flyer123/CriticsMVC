@@ -1,0 +1,56 @@
+/* Mail Form PlaceHolder
+========================================================*/
+@mixin placeholder-fade-up() {
+  *:-webkit-autofill ~ & {
+    opacity: .4;
+    @include transform(translateY(-80%));
+  }
+
+  &.state-1 {
+    opacity: .4;
+    @include transform(translateY(-80%));
+  }
+}
+
+@mixin placeholder-fade-left() {
+  *:-webkit-autofill ~ & {
+    opacity: .4;
+    @include transform(translateX(-100%));
+  }
+
+  &.state-1 {
+    opacity: .4;
+    @include transform(translateX(-100%));
+  }
+
+  @media (max-width: 1365px) {
+    .container > .mailform &,
+    .grid_12 & {
+      @include placeholder-fade-up;
+    }
+  }
+
+  @media (max-width: 979px) {
+    .grid_10 & {
+      @include placeholder-fade-up();
+    }
+  }
+
+  @media (max-width: 767px) {
+    @include placeholder-fade-up();
+  }
+}
+
+.mfPlaceHolder {
+  font: inherit;
+  cursor: text;
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: $input-padding;
+  line-height: $input-line-height;
+  color: $placeholder-clr;
+  opacity: $placeholder-opacity;
+  @include placeholder-fade-left();
+  @include transition(.3s all ease);
+}

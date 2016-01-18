@@ -1,0 +1,387 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="restaurants_dbModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.6" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="cities">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="City" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="districts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="District" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="CityId" Type="int" />
+        </EntityType>
+        <EntityType Name="networks">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Network" Type="varchar" MaxLength="350" />
+        </EntityType>
+        <EntityType Name="restaurants">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="300" />
+          <Property Name="NetworkId" Type="int" />
+          <Property Name="Phones" Type="varchar" MaxLength="50" />
+          <Property Name="WorkTime" Type="varchar" MaxLength="200" />
+          <Property Name="KitchenType" Type="varchar" MaxLength="200" />
+          <Property Name="SumAmount" Type="int" />
+          <Property Name="Propositions" Type="longtext" />
+          <Property Name="Music" Type="varchar" MaxLength="200" />
+          <Property Name="Children" Type="varchar" MaxLength="300" />
+          <Property Name="Address" Type="varchar" MaxLength="300" />
+          <Property Name="Longitude" Type="double" />
+          <Property Name="Lattitude" Type="double" />
+          <Property Name="DistrictId" Type="int" />
+          <Property Name="KitchenMark" Type="int" />
+          <Property Name="InteriorMark" Type="int" />
+          <Property Name="ReviewText" Type="longtext" />
+          <Property Name="CustomLabel" Type="varchar" MaxLength="350" />
+          <Property Name="DateOfCreation" Type="date" />
+          <Property Name="ServiceMark" Type="int" />
+        </EntityType>
+        <EntityType Name="usercomments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Comment" Type="varchar" MaxLength="350" />
+          <Property Name="RestaurantId" Type="int" />
+          <Property Name="DateOfCreation" Type="date" />
+          <Property Name="Email" Type="varchar" MaxLength="50" />
+          <Property Name="UserName" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="comm_rest">
+          <End Role="restaurants" Type="Self.restaurants" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="usercomments" Type="Self.usercomments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="restaurants">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="usercomments">
+              <PropertyRef Name="RestaurantId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="dist_city">
+          <End Role="cities" Type="Self.cities" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="districts" Type="Self.districts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cities">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="districts">
+              <PropertyRef Name="CityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="rest_dist">
+          <End Role="districts" Type="Self.districts" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="restaurants" Type="Self.restaurants" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="districts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="restaurants">
+              <PropertyRef Name="DistrictId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="rest_net">
+          <End Role="networks" Type="Self.networks" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="restaurants" Type="Self.restaurants" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="networks">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="restaurants">
+              <PropertyRef Name="NetworkId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="restaurants_dbModelStoreContainer">
+          <EntitySet Name="cities" EntityType="Self.cities" Schema="restaurants_db" store:Type="Tables" />
+          <EntitySet Name="districts" EntityType="Self.districts" Schema="restaurants_db" store:Type="Tables" />
+          <EntitySet Name="networks" EntityType="Self.networks" Schema="restaurants_db" store:Type="Tables" />
+          <EntitySet Name="restaurants" EntityType="Self.restaurants" Schema="restaurants_db" store:Type="Tables" />
+          <EntitySet Name="usercomments" EntityType="Self.usercomments" Schema="restaurants_db" store:Type="Tables" />
+          <AssociationSet Name="comm_rest" Association="Self.comm_rest">
+            <End Role="restaurants" EntitySet="restaurants" />
+            <End Role="usercomments" EntitySet="usercomments" />
+          </AssociationSet>
+          <AssociationSet Name="dist_city" Association="Self.dist_city">
+            <End Role="cities" EntitySet="cities" />
+            <End Role="districts" EntitySet="districts" />
+          </AssociationSet>
+          <AssociationSet Name="rest_dist" Association="Self.rest_dist">
+            <End Role="districts" EntitySet="districts" />
+            <End Role="restaurants" EntitySet="restaurants" />
+          </AssociationSet>
+          <AssociationSet Name="rest_net" Association="Self.rest_net">
+            <End Role="networks" EntitySet="networks" />
+            <End Role="restaurants" EntitySet="restaurants" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="restaurants_dbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="cities">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="districts" Relationship="Self.dist_city" FromRole="cities" ToRole="districts" />
+        </EntityType>
+        <EntityType Name="districts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="District" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CityId" Type="Int32" />
+          <NavigationProperty Name="cities" Relationship="Self.dist_city" FromRole="districts" ToRole="cities" />
+          <NavigationProperty Name="restaurants" Relationship="Self.rest_dist" FromRole="districts" ToRole="restaurants" />
+        </EntityType>
+        <EntityType Name="networks">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Network" Type="String" MaxLength="350" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="restaurants" Relationship="Self.rest_net" FromRole="networks" ToRole="restaurants" />
+        </EntityType>
+        <EntityType Name="restaurants">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="NetworkId" Type="Int32" />
+          <Property Name="Phones" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="WorkTime" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="KitchenType" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="SumAmount" Type="Int32" />
+          <Property Name="Propositions" Type="String" MaxLength="1073741823" FixedLength="false" Unicode="false" />
+          <Property Name="Music" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Children" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="Longitude" Type="Double" />
+          <Property Name="Lattitude" Type="Double" />
+          <Property Name="DistrictId" Type="Int32" />
+          <Property Name="KitchenMark" Type="Int32" />
+          <Property Name="InteriorMark" Type="Int32" />
+          <Property Name="ReviewText" Type="String" MaxLength="1073741823" FixedLength="false" Unicode="false" />
+          <Property Name="CustomLabel" Type="String" MaxLength="350" FixedLength="false" Unicode="false" />
+          <Property Name="DateOfCreation" Type="DateTime" />
+          <Property Name="ServiceMark" Type="Int32" />
+          <NavigationProperty Name="districts" Relationship="Self.rest_dist" FromRole="restaurants" ToRole="districts" />
+          <NavigationProperty Name="networks" Relationship="Self.rest_net" FromRole="restaurants" ToRole="networks" />
+          <NavigationProperty Name="usercomments" Relationship="Self.comm_rest" FromRole="restaurants" ToRole="usercomments" />
+        </EntityType>
+        <EntityType Name="usercomments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Comment" Type="String" MaxLength="350" FixedLength="false" Unicode="false" />
+          <Property Name="RestaurantId" Type="Int32" />
+          <Property Name="DateOfCreation" Type="DateTime" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="restaurants" Relationship="Self.comm_rest" FromRole="usercomments" ToRole="restaurants" />
+        </EntityType>
+        <Association Name="dist_city">
+          <End Role="cities" Type="Self.cities" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="districts" Type="Self.districts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cities">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="districts">
+              <PropertyRef Name="CityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="rest_dist">
+          <End Role="districts" Type="Self.districts" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="restaurants" Type="Self.restaurants" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="districts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="restaurants">
+              <PropertyRef Name="DistrictId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="rest_net">
+          <End Role="networks" Type="Self.networks" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="restaurants" Type="Self.restaurants" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="networks">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="restaurants">
+              <PropertyRef Name="NetworkId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="comm_rest">
+          <End Role="restaurants" Type="Self.restaurants" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="usercomments" Type="Self.usercomments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="restaurants">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="usercomments">
+              <PropertyRef Name="RestaurantId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="restaurants_dbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="cities" EntityType="Self.cities" />
+          <EntitySet Name="districts" EntityType="Self.districts" />
+          <EntitySet Name="networks" EntityType="Self.networks" />
+          <EntitySet Name="restaurants" EntityType="Self.restaurants" />
+          <EntitySet Name="usercomments" EntityType="Self.usercomments" />
+          <AssociationSet Name="dist_city" Association="Self.dist_city">
+            <End Role="cities" EntitySet="cities" />
+            <End Role="districts" EntitySet="districts" />
+          </AssociationSet>
+          <AssociationSet Name="rest_dist" Association="Self.rest_dist">
+            <End Role="districts" EntitySet="districts" />
+            <End Role="restaurants" EntitySet="restaurants" />
+          </AssociationSet>
+          <AssociationSet Name="rest_net" Association="Self.rest_net">
+            <End Role="networks" EntitySet="networks" />
+            <End Role="restaurants" EntitySet="restaurants" />
+          </AssociationSet>
+          <AssociationSet Name="comm_rest" Association="Self.comm_rest">
+            <End Role="restaurants" EntitySet="restaurants" />
+            <End Role="usercomments" EntitySet="usercomments" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="restaurants_dbModelStoreContainer" CdmEntityContainer="restaurants_dbEntities">
+          <EntitySetMapping Name="cities">
+            <EntityTypeMapping TypeName="restaurants_dbModel.cities">
+              <MappingFragment StoreEntitySet="cities">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="City" ColumnName="City" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="districts">
+            <EntityTypeMapping TypeName="restaurants_dbModel.districts">
+              <MappingFragment StoreEntitySet="districts">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="District" ColumnName="District" />
+                <ScalarProperty Name="CityId" ColumnName="CityId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="networks">
+            <EntityTypeMapping TypeName="restaurants_dbModel.networks">
+              <MappingFragment StoreEntitySet="networks">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Network" ColumnName="Network" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="restaurants">
+            <EntityTypeMapping TypeName="restaurants_dbModel.restaurants">
+              <MappingFragment StoreEntitySet="restaurants">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="NetworkId" ColumnName="NetworkId" />
+                <ScalarProperty Name="Phones" ColumnName="Phones" />
+                <ScalarProperty Name="WorkTime" ColumnName="WorkTime" />
+                <ScalarProperty Name="KitchenType" ColumnName="KitchenType" />
+                <ScalarProperty Name="SumAmount" ColumnName="SumAmount" />
+                <ScalarProperty Name="Propositions" ColumnName="Propositions" />
+                <ScalarProperty Name="Music" ColumnName="Music" />
+                <ScalarProperty Name="Children" ColumnName="Children" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Lattitude" ColumnName="Lattitude" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="KitchenMark" ColumnName="KitchenMark" />
+                <ScalarProperty Name="InteriorMark" ColumnName="InteriorMark" />
+                <ScalarProperty Name="ReviewText" ColumnName="ReviewText" />
+                <ScalarProperty Name="CustomLabel" ColumnName="CustomLabel" />
+                <ScalarProperty Name="DateOfCreation" ColumnName="DateOfCreation" />
+                <ScalarProperty Name="ServiceMark" ColumnName="ServiceMark" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="usercomments">
+            <EntityTypeMapping TypeName="restaurants_dbModel.usercomments">
+              <MappingFragment StoreEntitySet="usercomments">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="RestaurantId" ColumnName="RestaurantId" />
+                <ScalarProperty Name="DateOfCreation" ColumnName="DateOfCreation" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,14 @@
+﻿@model Test_Google_Api.Models.SaveModels.CityDB
+@{
+    ViewBag.Title = "CreateCity";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("CreateCity", "Admin", null, FormMethod.Post))
+{
+    Html.Label("Город");
+    @Html.EditorFor(m => m.Name);
+    @Html.ValidationMessageFor(model => model.Name)
+    <input type="submit" value="Добавить" />
+}
+

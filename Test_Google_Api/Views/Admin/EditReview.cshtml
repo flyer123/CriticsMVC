@@ -1,0 +1,637 @@
+﻿@using Test_Google_Api.Models.AdminModels;
+@model Test_Google_Api.Models.SaveModels.AdminSaveModel
+
+@{
+    ViewBag.Title = "Редактировать рецензию";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<City> cities = (List<City>)ViewBag.Cities;
+    List<District> districts = (List<District>)ViewBag.Districts;
+    List<Network> networks = (List<Network>)ViewBag.Networks;
+    var idString = Model.Id;
+}
+@Scripts.Render("~/bundles/jqueryui")
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+
+    <main>
+        <section class="well">
+            <div class="container">
+                <h3>Создание новой рецензии</h3>
+                @*@using (Html.BeginForm("", "", FormMethod.Post, new { @class = "mailform create-form"}))*@
+                @*{*@
+                <form method="post" action="" class="mailform create-form">
+                    <input id="lat" type="hidden" value="@Model.Lat" />
+                    <input id="lng" type="hidden" value="@Model.Lng" />
+                    <input id="addrr" type="hidden" value="@Model.Address" />
+                    <input id="id" type="hidden" value="@Model.Id" />
+                    @*<input type="hidden" name="form-type" value="" />*@
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6">
+                                <h5>Заполните поля:</h5>
+                                <label>
+                                    @Html.TextBoxFor(m => m.RestaurantName, new { @Value = @Model.RestaurantName })
+                                    @Html.ValidationMessageFor(m => m.RestaurantName)
+                                </label>
+                                <div class="label-wrap">
+                                    <label class="select-label">
+                                        @{List<SelectListItem> listItemsNetworks = new List<SelectListItem>();
+                                        listItemsNetworks.Add(new SelectListItem
+                                        {
+                                            Text = "Сеть",
+                                            Value = "0"
+                                        });
+                                        foreach (var v in networks)
+                                        {
+                                            listItemsNetworks.Add(new SelectListItem { Text = v.Name, Value = v.Id.ToString() });
+                                        }
+                                        @Html.DropDownList("network", new SelectList(listItemsNetworks, "Value", "Text"), new { @id = "networklist" });}
+                                    </label>
+                                    <a id="open-modal1" class="open-modal btn btn-sm" href="#modal-win1" title="Добавить новую сеть">+</a>
+                                </div>
+                                <h4>Контактные данные:</h4>
+                                <div class="label-wrap">
+                                    <label class="select-label">
+                                        @{List<SelectListItem> listItemsCities = new List<SelectListItem>();
+                                        listItemsCities.Add(new SelectListItem
+                                        {
+                                            Text = "Город",
+                                            Value = "0"
+                                        });
+                                        foreach (var v in cities)
+                                        {
+                                            listItemsCities.Add(new SelectListItem { Text = v.Name, Value = v.Id.ToString() });
+                                        }
+                                        @Html.DropDownList("city", new SelectList(listItemsCities, "Value", "Text"), new { @id = "citieslist" });}
+                                    </label>
+                                    <a id="open-modal2" class="open-modal btn btn-sm" href="#modal-win2" title="Добавить новый город">+</a>
+                                </div>
+                                <div class="label-wrap">
+                                    <label class="select-label">
+                                        @{List<SelectListItem> listItemsDistricts = new List<SelectListItem>();
+                                        listItemsDistricts.Add(new SelectListItem
+                                        {
+                                            Text = "Район",
+                                            Value = "0"
+                                        });
+                                        foreach (var v in districts)
+                                        {
+                                            listItemsDistricts.Add(new SelectListItem { Text = v.Name, Value = v.Id.ToString() });
+                                        }
+                                        @Html.DropDownList("district", new SelectList(listItemsDistricts, "Value", "Text"), new { @id = "districtlist" });}
+                                    </label>
+                                    <a id="open-modal3" class="open-modal btn btn-sm" href="#modal-win3" title="Добавить новый район">+</a>
+                                </div>
+                                <label>
+                                    @Html.TextBoxFor(m => m.Address, new { @placeholder = "Адрес", @id = "pac-input" })
+                                    @Html.ValidationMessageFor(m => m.Address)
+                                </label>
+
+
+                                <div class="map">
+                                    <div id="map" class="map_model_2"></div>
+                                </div>
+
+
+                                <label>
+                                    @Html.TextBoxFor(m => m.Phones, new { @Value = @Model.Phones })
+                                </label>
+                                <label>
+                                    @Html.TextBoxFor(m => m.WorkHours, new { @Value = @Model.WorkHours })
+                                </label>
+
+
+                                <h4>Характеристики:</h4>
+                                <label>
+                                    @Html.TextBoxFor(m => m.KitchenType, new { @Value = @Model.KitchenType })
+                                </label>
+                                <label>
+                                    @Html.TextBoxFor(m => m.Amount, new { @Value = @Model.Amount })
+                                </label>
+                                <label>
+                                    @Html.TextBoxFor(m => m.Propositions, new { @Value = @Model.Propositions })
+                                </label>
+                                <label>
+                                    @Html.TextBoxFor(m => m.Music, new { @Value = @Model.Music })
+                                </label>
+                                <label>
+                                    @Html.TextBoxFor(m => m.Children, new { @Value = @Model.Children })
+                                </label>
+
+                                <h4>Добавьте фото:</h4>
+
+                            </div>
+                            <div class="col-xs-12 col-sm-6">
+                                <h4>Рейтинг:</h4>
+                                <fieldset class="rating-select">
+                                    <label class="select-label">
+                                        @{List<SelectListItem> listKitchenRate = new List<SelectListItem>();
+                                        listKitchenRate.Add(new SelectListItem
+                                        {
+                                            Text = "Кухня",
+                                            Value = "0"
+                                        });
+                                        for (int i = 1; i <= 5; i++)
+                                        {
+                                            listKitchenRate.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
+                                        }
+                                        @Html.DropDownList("kitchenrate", new SelectList(listKitchenRate, "Value", "Text"), new { @id = "kitchen" });}
+                                    </label>
+                                    <label class="select-label">
+                                        @{List<SelectListItem> listInteriorRate = new List<SelectListItem>();
+                                        listInteriorRate.Add(new SelectListItem
+                                      {
+                                          Text = "Интерьер",
+                                          Value = "0"
+                                      });
+                                        for (int i = 1; i <= 5; i++)
+                                        {
+                                            listInteriorRate.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
+                                        }
+                                        @Html.DropDownList("interiorrate", new SelectList(listInteriorRate, "Value", "Text"), new { @id = "interior" });}
+                                    </label>
+                                    <label class="select-label">
+                                        @{List<SelectListItem> listServiceRate = new List<SelectListItem>();
+                                        listServiceRate.Add(new SelectListItem
+                                    {
+                                        Text = "Обслуживание",
+                                        Value = "0"
+                                    });
+                                        for (int i = 1; i <= 5; i++)
+                                        {
+                                            listServiceRate.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
+                                        }
+                                        @Html.DropDownList("servicerate", new SelectList(listServiceRate, "Value", "Text"), new { @id = "service" });}
+                                    </label>
+                                </fieldset>
+                                <h4>Рецензия</h4>
+                                <p>Для создания кастомоного лейбла выделите несколько слов текста рецензии символом "#" (символ "#" нужен перед каждым словом), например: #действительно #вкусная #еда.</p>
+                                <label>
+                                    @Html.TextAreaFor(model => model.ReviewText, new { @Value = @Model.ReviewText })
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mfControls tc">
+                            <input id="submit-all" class="btn" type="button" value="Обновить рецензию" />
+                        </div>
+                    </fieldset>
+                </form>
+               <br/>
+                <br/>
+                <div id="dZUpload" class="dropzone ">
+                    <div class="dz-default dz-message"></div>
+                </div>
+            </div>
+        </section>
+     
+    </main>
+    <div id="modal-network-dialog" title="Добавить новую сеть">
+        @using (Ajax.BeginForm("CreateNetwork", "Admin", null, new AjaxOptions { }, new { @class = "mailform" }))
+        {
+            <div>
+                <label>
+                    <label>Сеть</label>
+                    @Html.TextBox("NetworkName")
+                </label>
+            </div>
+        }
+        <button type="submit" class="btn" id="smbNetworkButton">Добавить</button>
+    </div>
+
+    <div id="modal-city-dialog" title="Добавить новый город">
+        @using (Ajax.BeginForm("CreateCity", "Admin", null, new AjaxOptions { }, new { @class = "mailform" }))
+        {
+            <div>
+                <label>
+                    <label>Город</label>
+                    @Html.TextBox("CityName")
+                </label>
+            </div>
+        }
+        <button type="submit" class="btn" id="smbCityButton">Добавить</button>
+    </div>
+
+    <div id="modal-district-dialog" title="Добавить новый Район">
+        @using (Ajax.BeginForm("CreateDistrict", "Admin", null, new AjaxOptions { }, new { @class = "mailform" }))
+        {
+            <div>
+                <label>
+                    <label>Район</label>
+                    @Html.TextBox("DistrictName")
+                </label>
+            </div>
+        }
+        <button type="submit" class="btn" id="smbDistrictButton">Добавить</button>
+    </div>
+
+    <div id="dialog-confirm" title="Отправить пустую рецензию?">
+        @*<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>These items will be permanently deleted and cannot be recovered. Are you sure?</p>*@
+    </div>
+
+    @section Scripts
+{
+        <script>
+
+            var data = @Html.Raw(Json.Encode(districts));
+            
+            $("#citieslist").on("change", function () {
+                $("#districtlist").empty();
+                for(var v = 0; v < data.length; v++)
+                {
+                    //here get id of selected city
+                    //and compare district.cityId to selected city
+                    if(data[v].CityId == $('#citieslist option:selected').val()){                       
+                        $("<option value=" + data[v].Id + ">" + data[v].Name + "</option>").appendTo("#districtlist");
+                    }
+                }
+            });
+
+            var review = @Html.Raw(Json.Encode(Model));
+            $("#networklist").val(review.NetworkId);
+            $("#citieslist").val(review.CityId);
+            $("#districtlist").val(review.DistrictId);
+            $("#kitchen").val(review.KitchenMark);
+            $("#interior").val(review.InteriorMark);
+            $("#service").val(review.ServiceMark);
+            $("#districtlist").empty();
+            for(var v = 0; v < data.length; v++)
+            {
+                //here get id of selected city
+                //and compare district.cityId to selected city
+                if(data[v].CityId == $('#citieslist option:selected').val()){                       
+                    $("<option value=" + data[v].Id + ">" + data[v].Name + "</option>").appendTo("#districtlist");
+                }
+            }
+
+    var addressDefault = @Html.Raw(Json.Encode(@Model.Address));
+            @*var folder = @Html.Raw(Json.Encode(@Model.Id));*@
+
+            //Autocomplete + Geocoder
+            var lt = $('#lat').val();
+            var ln = $('#lng').val();
+            $('#addrr').val(addressDefault);
+            function initMap() {
+
+                var latlng = new google.maps.LatLng(46.48, 30.72);
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    center: latlng,
+                    zoom: 13
+                });
+
+                geocoder = new google.maps.Geocoder();
+
+                var input = (document.getElementById('pac-input'));
+
+                map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+                var autocomplete = new google.maps.places.Autocomplete(input);
+                autocomplete.bindTo('bounds', map);
+
+                var marker = new google.maps.Marker({
+                    map: map,
+                    draggable: true,
+                    icon:'/images/gmap_marker_rest.png',
+                    anchorPoint: new google.maps.Point(0, -29),
+                    position: new google.maps.LatLng(lt, ln)
+                });
+
+                autocomplete.addListener('place_changed', function () {
+                    //marker.setVisible(false);
+                    var place = autocomplete.getPlace();
+                    if (!place.geometry) {
+                        window.alert("Autocomplete's returned place contains no geometry");
+                        return;
+                    }
+
+                    // If the place has a geometry, then present it on a map.
+                    if (place.geometry.viewport) {
+                        map.fitBounds(place.geometry.viewport);
+                    } else {
+                        map.setCenter(place.geometry.location);
+                        map.setZoom(17);
+                    }
+
+                    marker.setPosition(place.geometry.location);
+                    //marker.setVisible(true);
+
+                    var address = '';
+                    if (place.address_components) {
+                        address = [
+                          (place.address_components[0] && place.address_components[0].short_name || ''),
+                          (place.address_components[1] && place.address_components[1].short_name || ''),
+                          (place.address_components[2] && place.address_components[2].short_name || '')
+                        ].join(' ');
+                    }
+
+                    console.log(autocomplete.getPlace());
+                });
+
+                // Drag marker
+                marker.addListener('dragend', function () {
+
+                    geocoder.geocode({ 'location': marker.getPosition() }, function (results, status) {
+                        if (status === google.maps.GeocoderStatus.OK) {
+                            if (results[0]) {
+                                $('#pac-input').val(results[0].formatted_address);
+                                $('#lat').val(marker.getPosition().lat());
+                                $('#lng').val(marker.getPosition().lng());
+                                $('#addrr').val(results[0].formatted_address);
+                            }
+                        }
+                    });
+                });
+
+                //Marker by click
+                map.addListener('click', function (e) {
+                    placeMarkerAndPanTo(e.latLng, map);
+
+                    geocoder.geocode({ 'location': marker.getPosition() }, function (results, status) {
+                        if (status === google.maps.GeocoderStatus.OK) {
+                            if (results[0]) {
+                                $('#pac-input').val(results[0].formatted_address);
+                                $('#lat').val(marker.getPosition().lat());
+                                $('#lng').val(marker.getPosition().lng());
+                                $('#addrr').val(results[0].formatted_address);
+                            }
+                        }
+                    });
+                });
+
+                function placeMarkerAndPanTo(latLng, map) {
+                    marker.setPosition(latLng);
+                    //map.panTo(latLng);
+                };
+            };
+
+
+            //network part of script
+            $(function () {
+                $("#modal-network-dialog").dialog({ autoOpen: false, height: 140 });
+                $("#open-modal1").click(function () {
+                    $("#modal-network-dialog").dialog("open");
+                });
+            });
+            $(document).ready(function () {
+                $("#smbNetworkButton").click(function () {
+                    var dataObject = {
+                        Name: $("#NetworkName").val()
+                    };
+                    $.ajax({
+                        url: "@Url.Action("CreateNetwork", "Admin")",
+                        type: "POST",
+                        data: dataObject,
+                        dataType: "json",
+                        success: function (data) {
+
+                            if (data.toString().contains("Successfully Saved!")) {
+                                //here we will split string in order to obtain id of new network
+                                var res = data.toString().split("!");
+                                var id = res[1];
+                                //adding part of the script
+                                $select = $('#networklist');
+                                $select.append('<option id="' + id + '">' + $("#NetworkName").val() + '</option>');
+                            };
+                        },
+                        error: function () {
+                            alert("<div class='failed'>Error! Please try again</div>");
+                        }
+                    });
+                })
+            })
+
+            //city part of script
+            $(function () {
+                $("#modal-city-dialog").dialog({ autoOpen: false, height: 140 });
+                $("#open-modal2").click(function () {
+                    $("#modal-city-dialog").dialog("open");
+                });
+            });
+            $(document).ready(function () {
+                $("#smbCityButton").click(function () {
+                    var dataObject = {
+                        Name: $("#CityName").val()
+                    };
+                    $.ajax({
+                        url: "@Url.Action("CreateCity", "Admin")",
+                        type: "POST",
+                        data: dataObject,
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.toString().contains("Successfully Saved!")) {
+                                //here we will split string inoreder to obtain id of new city
+                                var res = data.toString().split("!");
+                                var id = res[1];
+                                //adding part of the script
+                                $select = $('#citieslist');
+                                $select.append('<option id="' + id + '">' + $("#Name").val() + '</option>');
+                            };
+                        },
+                        error: function () {
+                            alert("<div class='failed'>Error! Please try again</div>");
+                        }
+                    });
+                })
+            })
+
+
+            //district part of script
+            $(function () {
+                $("#modal-district-dialog").dialog({ autoOpen: false, height: 140 });
+                $("#open-modal3").click(function () {
+                    $("#modal-district-dialog").dialog("open");
+                });
+            });
+            $(document).ready(function () {
+                $("#smbDistrictButton").click(function () {
+                    var dataObject = {
+                        Name: $("#DistrictName").val(),
+                        CityId: $('#citieslist').val()
+                    };
+                    $.ajax({
+                        url: "@Url.Action("CreateDistrict", "Admin")",
+                        type: "POST",
+                        data: dataObject,
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.toString().contains("Successfully Saved!")) {
+                                //here we will split string in oreder to obtain id of new network
+                                var res = data.toString().split("!");
+                                var id = res[1];
+                                //adding part of the script
+                                $select = $('#districtlist');
+                                $select.append('<option id="' + id + '">' + $("#Name").val() + '</option>');
+                            };
+                        },
+                        error: function () {
+                            alert("<div class='failed'>Error! Please try again</div>");
+                        }
+                    });
+                })
+            });
+
+
+
+
+
+            $(document).ready(function () {
+                Dropzone.autoDiscover = false;
+                //Simple Dropzonejs
+                var myDropzone = new Dropzone("#dZUpload", {
+                    url: "@Url.Action("UpdateUploadedFile", "Admin")", autoProcessQueue: false, addRemoveLinks: true, params: {folder: $("#id").val()},
+                    accept: function(file, done) 
+                    {
+                        var re = /(?:\.([^.]+))?$/;
+                        var ext = re.exec(file.name)[1];
+                        ext = ext.toUpperCase();
+                        if ( ext == "JPEG" || ext == "BMP" || ext == "GIF" ||  ext == "JPG" ||  ext == "PNG" ||  ext == "JPE") 
+                        {
+                            done();
+                        }
+                        else { done("just select jpeg or bmp or gif or pnп files."); }
+                    },
+                    init: function () {
+                        $.getJSON("/Admin/GetImages/?id=" + @Model.Id).done(function (data) {
+                            if (data.Data != '') {
+
+                                $.each(data.Data, function (index, item) {
+
+                                    //// Create the mock file:
+                                    var mockFile = {
+                                        name: item.AttachmentID,
+                                        size: 12345,
+                                        status: Dropzone.ADDED,
+                                        url: item.URL
+                                    };
+
+                                    // Call the default addedfile event handler
+                                    myDropzone.emit("addedfile", mockFile);
+
+                                    // And optionally show the thumbnail of the file:
+                                    myDropzone.emit("thumbnail", mockFile, item.Path);
+
+                                    // If you use the maxFiles option, make sure you adjust it to the
+                                    // correct amount:
+                                    //var existingFileCount = 1; // The number of files already uploaded
+                                    //myDropzone.options.maxFiles = myDropzone.options.maxFiles - existingFileCount;
+                                });
+                            }
+
+                        });
+
+
+                        this.on("removedfile", function (file) {
+                            if(file.status == Dropzone.ADDED){
+                                var fileToRemove = {
+                                    URL: file.url
+                                };
+                                $.ajax({
+                                    url: "@Url.Action("RemoveFile", "Admin")",
+                                    type: "POST",
+                                    data: fileToRemove,
+                                    dataType: "json",
+                                });
+                            }
+                        });
+                    },
+
+                    success: function (file, response) {
+                        var imgName = response;
+                        file.previewElement.classList.add("dz-success");
+                        console.log("Successfully uploaded :" + imgName);
+                        $.alert("Рецензия успешно сохранена", "Успех");
+                    },
+                    error: function (file, response) {
+                        file.previewElement.classList.add("dz-error");
+                    },
+                });
+                $("#submit-all").click(function (e) {
+                    var dataObject = {
+                        //here get all fileds data
+                        RestaurantName: $("#RestaurantName").val(), Address: $("#addrr").val(), Phones: $("#Phones").val(), WorkHours: $("#WorkHours").val(),
+                        KitchenType: $("#KitchenType").val(), Amount: $("#Amount").val(), Propositions: $("#Propositions").val(), Music: $("#Music").val(),
+                        Children: $("#Children").val(), ReviewText: $("#ReviewText").val(), NetworkId: $("#networklist").val(), DistrictId: $("#districtlist").val(),
+                        CityId: $("#citieslist").val(), KitchenMark: $("#kitchen").val(), ServiceMark: $("#service").val(), InteriorMark: $("#interior").val(),
+                        Lat: $("#lat").val(), Lng: $("#lng").val(), Id: $("#id").val()
+                    };
+                    if (dataObject.ReviewText == "") {
+                        if (dataObject.Address == "") {
+                            alert("Поставьте маркер на карту");
+                        }
+                        //alert("EmptyReview");
+                        //confirmation modal popup
+                        $("#dialog-confirm").dialog({
+                            resizable: false,
+                            height: 140,
+                            modal: true,
+                            buttons: {
+                                "Отправить": function () {
+                                    $.ajax({
+                                        url: "@Url.Action("EditReview", "Admin")",
+                                        type: "POST",
+                                        data: dataObject,
+                                        dataType: "json",
+                                        success: function (data) {
+                                            if (data.toString() == "Successfully Saved!") {
+                                                myDropzone.options.autoProcessQueue = true;
+                                                myDropzone.processQueue();
+                                                
+                                            }
+                                            else {
+                                                //alert("<div class='failed'>Невозможно создать рецензию</div>");
+                                            }
+                                        },
+                                        error: function () {
+                                            alert("<div class='failed'>Error! Please try again</div>");
+                                        }
+                                    });
+                                },
+                                "Закрыть": function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        if (dataObject.Address == "") {
+                            alert("Поставьте маркер на карту");
+                        }
+                        $.ajax({
+                            url: "@Url.Action("EditReview", "Admin")",
+                            type: "POST",
+                            data: dataObject,
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.toString() == "Successfully Saved!") {
+                                    myDropzone.options.autoProcessQueue = true;
+                                    myDropzone.processQueue();
+                                }
+                                else {
+                                    //alert("<div class='failed'>Невозможно создать рецензию</div>");
+                                }
+                            },
+                            error: function () {
+                                alert("<div class='failed'>Error! Please try again</div>");
+                            }
+                        });
+                    }
+
+
+                });
+                myDropzone.on("queuecomplete", function () {
+                    adPhotosDropzone.options.autoProcessQueue = false;
+                });
+            });
+
+</script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUtC1HqiaLGRktW0WZDXUwmblmyWsPrGc&signed_in=true&libraries=places&callback=initMap&language=ru" async defer></script>
+    }
+
+</body>
+</html>

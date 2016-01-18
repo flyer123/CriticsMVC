@@ -1,0 +1,117 @@
+﻿@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.EntityFramework
+@using Microsoft.Owin.Security
+@{
+    var statusMessage = string.Empty;
+    if (User.Identity.IsAuthenticated)
+    {
+        statusMessage = string.Format("Hello {0}!!", User.Identity.GetUserName());
+    }
+    if (Request["Action"] == "Log In")
+    {
+        var userStore = new UserStore<IdentityUser>();
+        var userManager = new UserManager<IdentityUser>(userStore);
+        var userName = Request["UserName"];
+        var password = Request["Password"];
+        var user = userManager.Find(userName, password);
+
+        if (user != null)
+        {
+            var authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
+            var userIdentity = userManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
+
+            authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = false }, userIdentity);
+            Response.Redirect("~/Admin/AdminMenu");
+        }
+        else
+        {
+            statusMessage = "Invalid username or password.";
+        }
+    }
+    if (Request["Action"] == "Log Out")
+    {
+        var authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
+        authenticationManager.SignOut();
+        Response.Redirect("~/Home/Login");
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Log In</title>
+    <style>
+        body {
+            font: 0.9em Calibri;
+        }
+    </style>
+</head>
+<body>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form method="post">
+            <fieldset>
+                <legend>Log In</legend>
+                <p>
+                    @statusMessage
+                </p>
+                <div>
+                    <div>
+                        <input type="Submit" name="Action" value="Log Out" />
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    }
+    else
+    {
+
+        <section class="well">
+            <div class="container">
+                <h3>Учётная запись пользователя</h3>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-5">
+                        <form method="post" class='mailform login-form'>
+                            <fieldset>
+                                <label>
+                                    @Html.TextBox("UserName", "", new { @placeholder="Логин"})
+                                </label>
+                                <label>
+                                    @Html.Password("Password", "", new { @placeholder = "Пароль" })
+                                </label>
+                                <div class="mfControls">
+                                    <button class="btn" name="Action" type="Submit" value="Log In">Войти</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        @*<form method="post" class='mailform login-form'>
+            <fieldset>
+                <legend>Log In</legend>
+                <p>
+                    @statusMessage
+                </p>
+                <div style="margin-bottom:10px">
+                    @Html.Label("User Name", "UserName")
+                    <div>
+                        @Html.TextBox("UserName")
+                    </div>
+                </div>
+                <div style="margin-bottom:10px">
+                    @Html.Label("Password", "Password")
+                    <div>
+                        @Html.Password("Password")
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <button type="Submit" name="Action" value="Log In" >Log in</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>*@
+    }
+</body>
+</html>

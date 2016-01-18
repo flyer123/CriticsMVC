@@ -1,0 +1,102 @@
+﻿@using System.Net.Mail;
+@model Test_Google_Api.Models.MailModel
+@{
+    ViewBag.Title = "Контактная информация";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <main>
+        <section class="well">
+            <div class="container">
+                <h2>Контактная информация</h2>
+                <h3>О проекте</h3>
+                <p>Текст нужно подобрать. В жизни каждого человека и каждого города должны быть постоянные величины. К примеру, есть несколько постоянных ресторанных величин. И «У моря», безусловно, одна из них: классический рыбный ресторан, в котором качество сочетается с низкими ценами на устрицы (особенно, когда проходят специальные устричные фестивали). </p>
+                <p>Первый этаж «У моря» за много лет существования несколько раз кардинально менял свой стиль. Сначала это была нажористая «Рюмочная» с традиционными русскими разносолами, наливками и настойками.</p>
+                <p>Mini Bar действительно небольшой – один зал с монументальной барной стойкой темного дерева, небольшими столиками, белоснежным потолком с лепниной в стиле сталинский ампир и хрустальной люстрой. Больше всего бар напоминает лобби шикарного отеля – комфортно, неспешно, время течет плавно и лениво.</p>
+                <div class="tc mt1">
+                    <div class="divider">
+                        <span class="fl flaticon-restaurant35"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="well2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4">
+                        <h3>Контакты</h3>
+                        <address class="addr2">
+                            <p><span class="fa fa-phone"></span> <a href="callto:#"> +38 (042) 8956233</a></p>
+                            <p><span class="fa fa-envelope"></span> <a href="mailto:#">ego_crirtic@gmail.com</a></p>
+                            <p><span class="fa fa-map-marker"></span>Украина, г.Одесса, ул.Критическая, 35</p>
+                    </div>
+                    </address>
+                    <div class="col-xs-12 col-sm-8">
+                        <h3>Оставьте сообщение:</h3>
+                        @using (Html.BeginForm("","",FormMethod.Post,new {@class="mailform feedback-form"}))
+                        {
+                            <fieldset>
+                                <label>
+                                    @Html.TextBoxFor(Model => Model.Name, new { @placeholder = "Имя" })
+                                    @Html.ValidationMessageFor(model => model.Name)
+                                </label>
+                                <label>
+                                    @Html.TextBoxFor(Model => Model.Phone, new { @placeholder = "Телефон" })
+                                    @Html.ValidationMessageFor(model => model.Phone)
+                                </label>
+                                <label>
+                                    @Html.TextBoxFor(Model => Model.E_mail, new { @placeholder = "e-mail" })
+                                    @Html.ValidationMessageFor(model => model.E_mail)
+                                </label>
+                                <label>
+                                    @Html.TextAreaFor(model => model.Message, new { @placeholder = "Сообщение" })
+                                    @Html.ValidationMessageFor(model => model.Message)
+                                </label>
+                                <div class="mfControls">
+                                    <input type="button" class="btn" value="Отправить" id="AjaxPost" />
+                                </div>
+                            </fieldset>
+                        }
+                    </div>
+            </div>
+                </div>
+        </section>
+    </main>
+    <script>
+    $(document).ready(function () {
+        $("#AjaxPost").click(function () {
+            var dataObject = {
+                Name: $("#Name").val(),
+                E_mail: $("#E_mail").val(),
+                Phone: $("#Phone").val(),
+                Name: $("#Message").val()
+            };
+            $.ajax({
+                url: "@Url.Action("SendMessage", "Home")",
+                type: "POST",
+                data: dataObject,
+                dataType: "json",
+                success: function (data) {
+                    if (data.toString() == "Successfully Saved!") {
+                        alert("Отправлено!");
+                    }
+                    else {
+                        alert("<div class='failed'>" + data + "</div>");
+                    }
+                },
+                error: function () {
+                    alert("<div class='failed'>Ошибка! Попробуйте еще раз!</div>");
+                }
+            });
+        })
+    })
+    </script>
+</body>
+
+
+
+

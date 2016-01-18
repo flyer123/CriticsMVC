@@ -1,0 +1,62 @@
+﻿@model PagedList.IPagedList<Test_Google_Api.Models.ViewModel.SearchModel>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Результат поиска";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Результат поиска</h2>
+@if (Model != null)
+{
+    if (Model.Count != 0)
+    {
+        <div class="pager">
+            @Html.PagedListPager(Model, page => Url.Action("Rating", new { page }))
+        </div>
+    }
+}
+<section class="well">
+    <div class="container">
+        <div class="row">
+            <table class="table stacktable1 stacktable2">
+                <tr>
+                    <th>
+                        Название ресторана
+                    </th>
+                    <th>
+                        Ссылка на рецензию
+                    </th>
+                </tr>
+                @if (Model != null)
+                {
+                    if (Model.Count != 0)
+                    {
+                        foreach (var v in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <h5>@v.Name</h5>
+                                </td>
+                                <td>
+                                    <h5>
+                                        @Html.ActionLink("Перейти", "Review", "Home", new { num = @v.Id.ToString() }, null)
+                                    </h5>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            </table>
+            </div>
+        </div>
+    </section>
+            @if (Model != null)
+            {
+                if (Model.Count != 0)
+                {
+                    <div class="pager">
+                        @Html.PagedListPager(Model, page => Url.Action("Rating", new { page }))
+                    </div>
+                }
+            }
+
+

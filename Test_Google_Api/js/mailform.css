@@ -1,0 +1,268 @@
+/*font-family: 'Ubuntu', sans-serif;*/
+/**/
+/*========================================================
+                      Contact Form
+=========================================================*/
+/* MF
+========================================================*/
+.mailform {
+  position: relative;
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto; }
+  .mailform fieldset {
+    border: none; }
+  .mailform * {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box; }
+  * + .mailform {
+    margin-top: 30px; }
+
+.mailform label {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  /*select {
+    display: inline-block;
+    margin: 0;
+    outline: none;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    padding: 5px 7px;
+    line-height: 20px;
+    color: #2f3c4f;
+    background: #f4f4f4;
+    border: 1px solid #acacac;
+    border-radius: 5px;
+  }
+
+  * + select {
+    margin-left: 10px;
+  }*/ }
+  .mailform label + * {
+    margin-top: 20px; }
+  .mailform label:first-child {
+    margin-top: 0; }
+  .mailform label input, .mailform label textarea, .mailform label select {
+    display: block;
+    width: 100%;
+    margin: 0;
+    outline: none;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    padding: 8px 15px;
+    line-height: 20px;
+    color: #2f3c4f;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid #acacac;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px; }
+    .mailform label input:-moz-placeholder, .mailform label textarea:-moz-placeholder, .mailform label select:-moz-placeholder {
+      color: #2f3c4f;
+      opacity: 1; }
+    .mailform label input::-webkit-input-placeholder, .mailform label textarea::-webkit-input-placeholder, .mailform label select::-webkit-input-placeholder {
+      color: #2f3c4f;
+      opacity: 1; }
+    .mailform label input::-moz-placeholder, .mailform label textarea::-moz-placeholder, .mailform label select::-moz-placeholder {
+      color: #2f3c4f;
+      opacity: 1; }
+    .mailform label input:-ms-input-placeholder, .mailform label textarea:-ms-input-placeholder, .mailform label select:-ms-input-placeholder {
+      color: #2f3c4f;
+      opacity: 1; }
+  .mailform label textarea {
+    resize: vertical;
+    overflow: auto;
+    height: 200px; }
+  .mailform label select {
+    position: relative;
+    -moz-transition: 0.3s;
+    -o-transition: 0.3s;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+    cursor: pointer;
+    border-radius: 0;
+    display: inline-block; }
+    .mailform label select:hover {
+      background: transparent;
+      color: #2D2D2D;
+      -webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.25);
+      -moz-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.25);
+      box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.25); }
+  .mailform label.select-label {
+    min-width: 250px;
+    max-width: 260px;
+    position: relative;
+    /*&:before {
+      content: '\f107';
+      position: absolute;
+      right: 12px;
+      top: 8px;
+      width: 24px;
+      height: 24px;
+      font: 400 20px "FontAwesome";
+      line-height: 24px;
+      color: #2D2D2D;
+      text-align: center;
+      -moz-transition: 0.4s all ease;
+      -o-transition: 0.4s all ease;
+      -webkit-transition: 0.4s all ease;
+      transition: 0.4s all ease;
+    }*/ }
+  @media (max-width: 1365px) {
+    .mailform label {
+      margin-top: 20px; } }
+
+.label-wrap {
+  margin-top: 20px; }
+  .label-wrap label {
+    display: inline-block; }
+    .label-wrap label + * {
+      margin: 0 0 0 20px; }
+
+.filter-form .fields + * {
+  margin-top: 20px; }
+.filter-form .fields fieldset {
+  display: inline-block; }
+  .filter-form .fields fieldset + fieldset {
+    margin-left: 20px; }
+  @media (max-width: 767px) {
+    .filter-form .fields fieldset {
+      display: block; }
+      .filter-form .fields fieldset + fieldset {
+        margin-left: 0;
+        margin-top: 20px; }
+      .filter-form .fields fieldset label {
+        display: block; } }
+
+.feedback-form label textarea {
+  height: 200px; }
+
+/* MF Controls
+========================================================*/
+.mfControls {
+  margin-top: 50px;
+  word-spacing: 10px; }
+  .mfControls > * {
+    word-spacing: normal;
+    margin-bottom: 5px; }
+
+/* Mail Form Validation
+  ========================================================*/
+.mfValidation {
+  -moz-transform-origin: 0% 50%;
+  -ms-transform-origin: 0% 50%;
+  -o-transform-origin: 0% 50%;
+  -webkit-transform-origin: 0% 50%;
+  transform-origin: 0% 50%;
+  -moz-transition: 0.3s all ease;
+  -o-transition: 0.3s all ease;
+  -webkit-transition: 0.3s all ease;
+  transition: 0.3s all ease;
+  position: absolute;
+  text-align: right;
+  top: auto;
+  left: auto;
+  bottom: 100%;
+  right: 10px;
+  width: 210px;
+  padding: 0;
+  margin: 0;
+  min-height: 0;
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 20px;
+  color: #de703c;
+  opacity: 0;
+  visibility: hidden;
+  cursor: pointer;
+  z-index: 998;
+  /*&.show {
+    @include transform(scale(1));
+    opacity: 1;
+    visibility: visible;
+    @include animation(notifanim .4s cubic-bezier(.55, 0, .1, 1) forwards);
+  }
+
+  &.hide{
+    @include animation(notifanim-fo .4s cubic-bezier(.55, 0, .1, 1) forwards);
+  }
+  
+  &.valid{
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  @media (max-width: 767px) {
+    text-align: right;
+    top: auto;
+    left: auto;
+    bottom: 100%;
+    right: 0;
+    background: none;
+    padding: 0;
+    margin: 0 0 3px;
+    min-height: 0;
+    @include box-shadow(none);
+    &:before {
+      display: none;
+    }
+
+    &:hover{
+      background: none;
+      right: 5px;
+    }
+  }*/ }
+  .mfValidation:hover {
+    background: none;
+    right: 4px; }
+
+/*@include keyframes(notifanim-fo) {
+  0% {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+  }
+
+  20% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  99% {
+    visibility: hidden;
+  }
+
+  100% {
+    visibility: hidden;
+    transform: scale(.3);
+    opacity: 0;
+  }
+}
+
+@include keyframes(notifanim) {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(.3);
+  }
+
+  1% {
+    visibility: visible;
+  }
+
+  50% {
+    transform: scale(1);
+  }
+
+  75% {
+    transform: scale(.9);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}*/
